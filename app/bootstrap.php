@@ -4,7 +4,7 @@ declare(strict_types=1);
 define('APP_DIR', __DIR__);
 define('ROOT_DIR', dirname(__DIR__));
 define('STORAGE_DIR', APP_DIR . '/storage');
-define('APP_VERSION', '1.0.0');
+define('APP_VERSION', '1.0.4');
 
 mb_internal_encoding('UTF-8');
 date_default_timezone_set('Asia/Riyadh');
@@ -61,11 +61,42 @@ function https(): bool {
     return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
 }
 
+/* Sessions live in the database: file sessions proved unreliable on shared/free hosts. */
+class DbSessionHandler implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface {
+    private int $ttl;
+    public function __construct(int $ttl) { $this->ttl = $ttl; }
+    public function open(string $path, string $name): bool {
+        static $ready = false;
+        if (!$ready) {
+            db()->exec("CREATE TABLE IF NOT EXISTS app_sessions (id VARCHAR(128) NOT NULL PRIMARY KEY, data MEDIUMTEXT NOT NULL, updated_at INT UNSIGNED NOT NULL, KEY k_upd (updated_at)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+            $ready = true;
+        }
+        return true;
+    }
+    public function close(): bool { return true; }
+    public function read(string $id): string|false {
+        $v = val('SELECT data FROM app_sessions WHERE id = ? AND updated_at > ?', [$id, time() - $this->ttl]);
+        return $v === null ? '' : (string)$v;
+    }
+    public function write(string $id, string $data): bool {
+        q('INSERT INTO app_sessions (id, data, updated_at) VALUES (?,?,?) ON DUPLICATE KEY UPDATE data = VALUES(data), updated_at = VALUES(updated_at)', [$id, $data, time()]);
+        return true;
+    }
+    public function destroy(string $id): bool { q('DELETE FROM app_sessions WHERE id = ?', [$id]); return true; }
+    public function gc(int $max): int|false { return q('DELETE FROM app_sessions WHERE updated_at < ?', [time() - $this->ttl])->rowCount(); }
+    public function validateId(string $id): bool { return val('SELECT 1 FROM app_sessions WHERE id = ? AND updated_at > ?', [$id, time() - $this->ttl]) !== null; }
+    public function updateTimestamp(string $id, string $data): bool { q('UPDATE app_sessions SET updated_at = ? WHERE id = ?', [time(), $id]); return true; }
+}
+
 function start_session(): void {
     if (session_status() === PHP_SESSION_ACTIVE) return;
-    $dir = STORAGE_DIR . '/sessions';
-    if (!is_dir($dir)) @mkdir($dir, 0700, true);
-    if (is_dir($dir) && is_writable($dir)) session_save_path($dir);
+    if (installed()) {
+        session_set_save_handler(new DbSessionHandler(43200), true);
+    } else {
+        $dir = STORAGE_DIR . '/sessions';
+        if (!is_dir($dir)) @mkdir($dir, 0700, true);
+        if (is_dir($dir) && is_writable($dir)) session_save_path($dir);
+    }
     session_name('coop_sid');
     session_set_cookie_params(['lifetime' => 0, 'path' => '/', 'secure' => https(), 'httponly' => true, 'samesite' => 'Lax']);
     ini_set('session.gc_maxlifetime', '43200');

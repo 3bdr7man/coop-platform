@@ -520,12 +520,14 @@ function handle(string $a, array $in): void {
         if ($id) {
             $old = one("SELECT * FROM users WHERE id = ? AND role IN ('admin','supervisor')", [$id]);
             if (!$old) throw new ApiError('الحساب غير موجود.', 404);
-            q('UPDATE users SET name = ?, username = ?, phone = ? WHERE id = ?', [$name, $username, $phone, $id]);
+            $role = ($in['role'] ?? $old['role']) === 'admin' ? 'admin' : 'supervisor';
+            if ($id === (int)$me['id']) $role = 'admin';
+            q('UPDATE users SET name = ?, username = ?, phone = ?, role = ? WHERE id = ?', [$name, $username, $phone, $role, $id]);
             if ($id === (int)$me['id']) { $_SESSION['user']['name'] = $name; $_SESSION['user']['username'] = $username; }
             audit('update', 'staff', $id, $name);
         } else {
             $pw = rand_code(10);
-            q("INSERT INTO users (role, username, name, phone, password_hash, must_change) VALUES ('supervisor', ?, ?, ?, ?, 1)", [$username, $name, $phone, password_hash($pw, PASSWORD_DEFAULT)]);
+            q("INSERT INTO users (role, username, name, phone, password_hash, must_change) VALUES (?, ?, ?, ?, ?, 1)", [($in['role'] ?? '') === 'admin' ? 'admin' : 'supervisor', $username, $name, $phone, password_hash($pw, PASSWORD_DEFAULT)]);
             $id = (int)db()->lastInsertId();
             audit('create', 'staff', $id, $name);
         }
@@ -534,7 +536,7 @@ function handle(string $a, array $in): void {
 
     case 'staff.reset': {
         need('admin');
-        $u = one("SELECT * FROM users WHERE id = ? AND role = 'supervisor'", [(int)($in['id'] ?? 0)]);
+        $u = one("SELECT * FROM users WHERE id = ? AND role IN ('admin','supervisor') AND id <> ?", [(int)($in['id'] ?? 0), (int)me()['id']]);
         if (!$u) throw new ApiError('الحساب غير موجود.', 404);
         $pw = rand_code(10);
         q('UPDATE users SET password_hash = ?, must_change = 1 WHERE id = ?', [password_hash($pw, PASSWORD_DEFAULT), $u['id']]);
@@ -544,17 +546,123 @@ function handle(string $a, array $in): void {
 
     case 'staff.toggle': {
         need('admin');
-        q("UPDATE users SET active = 1 - active WHERE id = ? AND role = 'supervisor'", [(int)($in['id'] ?? 0)]);
+        q("UPDATE users SET active = 1 - active WHERE id = ? AND role IN ('admin','supervisor') AND id <> ?", [(int)($in['id'] ?? 0), (int)me()['id']]);
         audit('toggle', 'staff', (int)($in['id'] ?? 0));
         out();
     }
 
     case 'staff.delete': {
         need('admin');
-        $u = one("SELECT * FROM users WHERE id = ? AND role = 'supervisor'", [(int)($in['id'] ?? 0)]);
+        $u = one("SELECT * FROM users WHERE id = ? AND role IN ('admin','supervisor') AND id <> ?", [(int)($in['id'] ?? 0), (int)me()['id']]);
         if (!$u) throw new ApiError('الحساب غير موجود.', 404);
         q('DELETE FROM users WHERE id = ?', [$u['id']]);
         audit('delete', 'staff', $u['id'], $u['name']);
+        out();
+    }
+
+    /* ---------- login support (admin) ---------- */
+    case 'support.search': {
+        need('admin');
+        $qs = trim((string)($in['q'] ?? ''));
+        $filter = (string)($in['filter'] ?? '');
+        $sql = "SELECT u.id, u.role, u.username, u.name, u.phone, u.active, u.must_change, u.last_login, u.created_at,
+                  (u.password_hash IS NOT NULL) AS has_password, (u.activation_code IS NOT NULL) AS has_code, u.activation_code,
+                  t.id AS trainee_id, t.dept, t.specialty, t.entity,
+                  (SELECT COUNT(*) FROM login_attempts a WHERE a.username = u.username AND a.success = 0 AND a.created_at > (NOW() - INTERVAL 15 MINUTE)) AS fails_recent,
+                  (SELECT COUNT(*) FROM login_attempts a WHERE a.username = u.username AND a.success = 0 AND a.created_at > (NOW() - INTERVAL 7 DAY)) AS fails_week,
+                  (SELECT MAX(a.created_at) FROM login_attempts a WHERE a.username = u.username AND a.success = 0) AS last_fail
+                FROM users u LEFT JOIN trainees t ON t.user_id = u.id WHERE 1=1";
+        $args = [];
+        if ($qs !== '') { $like = '%' . $qs . '%'; $d = digits_only($qs); $dl = $d === '' ? $like : '%' . $d . '%'; $sql .= ' AND (u.name LIKE ? OR u.username LIKE ? OR u.phone LIKE ?)'; array_push($args, $like, $dl, $dl); }
+        if ($filter === 'staff') $sql .= " AND u.role IN ('admin','supervisor')";
+        elseif ($filter === 'trainee') $sql .= " AND u.role = 'trainee'";
+        elseif ($filter === 'locked') $sql .= " AND (SELECT COUNT(*) FROM login_attempts a WHERE a.username = u.username AND a.success = 0 AND a.created_at > (NOW() - INTERVAL 15 MINUTE)) >= 5";
+        elseif ($filter === 'inactive') $sql .= ' AND u.active = 0';
+        elseif ($filter === 'pending') $sql .= ' AND (u.password_hash IS NULL OR u.must_change = 1)';
+        $sql .= " ORDER BY FIELD(u.role,'admin','supervisor','trainee'), u.name LIMIT 300";
+        $rows = all($sql, $args);
+        $unknown = all("SELECT a.username, COUNT(*) AS n, MAX(a.created_at) AS last FROM login_attempts a LEFT JOIN users u ON u.username = a.username
+                        WHERE a.success = 0 AND a.created_at > (NOW() - INTERVAL 7 DAY) AND u.id IS NULL GROUP BY a.username ORDER BY last DESC LIMIT 30");
+        $stats = one("SELECT SUM(role='trainee') AS trainees, SUM(role<>'trainee') AS staff, SUM(active=0) AS inactive,
+                        SUM(password_hash IS NULL OR must_change=1) AS pending FROM users");
+        $stats['locked'] = (int)val("SELECT COUNT(*) FROM (SELECT username FROM login_attempts WHERE success = 0 AND created_at > (NOW() - INTERVAL 15 MINUTE) GROUP BY username HAVING COUNT(*) >= 5) x");
+        out(['rows' => $rows, 'unknown' => $unknown, 'stats' => $stats, 'me' => (int)me()['id']]);
+    }
+
+    case 'support.attempts': {
+        need('admin');
+        $u = one('SELECT username FROM users WHERE id = ?', [(int)($in['id'] ?? 0)]);
+        $name = $u ? $u['username'] : digits_only($in['username'] ?? '');
+        out(all('SELECT success, ip, created_at FROM login_attempts WHERE username = ? ORDER BY id DESC LIMIT 20', [$name]));
+    }
+
+    case 'support.unlock': {
+        need('admin');
+        $u = one('SELECT id, username, name FROM users WHERE id = ?', [(int)($in['id'] ?? 0)]);
+        $name = $u ? $u['username'] : digits_only($in['username'] ?? '');
+        if ($name === '') throw new ApiError('الحساب غير موجود.', 404);
+        $n = q('DELETE FROM login_attempts WHERE username = ? AND success = 0', [$name])->rowCount();
+        audit('unlock', 'user', $u['id'] ?? $name, ($u['name'] ?? $name) . ' – ' . $n);
+        out(['cleared' => $n]);
+    }
+
+    case 'support.logout': {
+        $me = need('admin');
+        $id = (int)($in['id'] ?? 0);
+        if ($id === (int)$me['id']) throw new ApiError('لا يمكنك إنهاء جلستك من هنا. استخدم «خروج».');
+        $n = q('DELETE FROM app_sessions WHERE data LIKE ?', ['%s:2:"id";i:' . $id . ';s:4:"role"%'])->rowCount();
+        audit('force_logout', 'user', $id, 'جلسات: ' . $n);
+        out(['sessions' => $n]);
+    }
+
+    case 'support.reset': {
+        $me = need('admin');
+        $u = one('SELECT * FROM users WHERE id = ?', [(int)($in['id'] ?? 0)]);
+        if (!$u) throw new ApiError('الحساب غير موجود.', 404);
+        if ((int)$u['id'] === (int)$me['id']) throw new ApiError('لتغيير كلمة مرورك استخدم «الإعدادات» ← «حسابي».');
+        q('DELETE FROM login_attempts WHERE username = ? AND success = 0', [$u['username']]);
+        q('DELETE FROM app_sessions WHERE data LIKE ?', ['%s:2:"id";i:' . (int)$u['id'] . ';s:4:"role"%']);
+        if ($u['role'] === 'trainee') {
+            $code = rand_code(8);
+            q('UPDATE users SET activation_code = ?, password_hash = NULL, must_change = 0, active = 1 WHERE id = ?', [$code, $u['id']]);
+            audit('reset_access', 'trainee', $u['id'], $u['name']);
+            out(['kind' => 'code', 'value' => $code]);
+        }
+        $pw = rand_code(10);
+        q('UPDATE users SET password_hash = ?, must_change = 1, active = 1 WHERE id = ?', [password_hash($pw, PASSWORD_DEFAULT), $u['id']]);
+        audit('reset_password', 'staff', $u['id'], $u['name']);
+        out(['kind' => 'password', 'value' => $pw]);
+    }
+
+    case 'support.toggle': {
+        $me = need('admin');
+        $u = one('SELECT id, name, active FROM users WHERE id = ?', [(int)($in['id'] ?? 0)]);
+        if (!$u) throw new ApiError('الحساب غير موجود.', 404);
+        if ((int)$u['id'] === (int)$me['id']) throw new ApiError('لا يمكنك إيقاف حسابك.');
+        q('UPDATE users SET active = 1 - active WHERE id = ?', [$u['id']]);
+        if ((int)$u['active']) q('DELETE FROM app_sessions WHERE data LIKE ?', ['%s:2:"id";i:' . (int)$u['id'] . ';s:4:"role"%']);
+        audit((int)$u['active'] ? 'deactivate' : 'activate_account', 'user', $u['id'], $u['name']);
+        out(['active' => (int)$u['active'] ? 0 : 1]);
+    }
+
+    case 'support.delete': {
+        $me = need('admin');
+        $u = one('SELECT * FROM users WHERE id = ?', [(int)($in['id'] ?? 0)]);
+        if (!$u) throw new ApiError('الحساب غير موجود.', 404);
+        if ((int)$u['id'] === (int)$me['id']) throw new ApiError('لا يمكنك حذف حسابك.');
+        $mode = ($in['mode'] ?? 'account') === 'all' ? 'all' : 'account';
+        q('DELETE FROM app_sessions WHERE data LIKE ?', ['%s:2:"id";i:' . (int)$u['id'] . ';s:4:"role"%']);
+        q('DELETE FROM login_attempts WHERE username = ?', [$u['username']]);
+        if ($u['role'] === 'trainee' && $mode === 'all') {
+            $t = one('SELECT * FROM trainees WHERE user_id = ?', [$u['id']]);
+            if ($t) {
+                foreach (all('SELECT report_file FROM visits WHERE trainee_id = ?', [$t['id']]) as $v) drop_file($v['report_file']);
+                foreach (all('SELECT file FROM weekly_reports WHERE trainee_id = ?', [$t['id']]) as $v) drop_file($v['file']);
+                q('DELETE FROM trainees WHERE id = ?', [$t['id']]);
+            }
+        }
+        q('DELETE FROM users WHERE id = ?', [$u['id']]);
+        audit('delete', $u['role'] === 'trainee' ? ($mode === 'all' ? 'trainee' : 'user') : 'staff', $u['id'], $u['name'] . ($mode === 'all' ? ' (مع كل بياناته)' : ' (الحساب فقط)'));
         out();
     }
 

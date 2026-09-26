@@ -158,3 +158,10 @@ CREATE TABLE IF NOT EXISTS login_attempts (
   KEY k_u (username, created_at),
   KEY k_ip (ip, created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS app_sessions (
+  id VARCHAR(128) NOT NULL PRIMARY KEY,
+  data MEDIUMTEXT NOT NULL,
+  updated_at INT UNSIGNED NOT NULL,
+  KEY k_upd (updated_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
