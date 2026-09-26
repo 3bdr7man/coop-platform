@@ -1,0 +1,1245 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+</head>
+<body>
+<title>منصة التدريب التعاوني – تجريبية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EEF2F1; --surface:#FFFFFF; --ink:#15302B; --muted:#5B6E69; --line:#D3DCD9;
+  --pine:#0D5A4E; --pine-ink:#FFFFFF; --pine-soft:#DDEBE7; --saffron:#B27417; --saffron-soft:#F6EAD3;
+  --danger:#A53A28; --danger-soft:#F6E1DC; --focus:#1C7FD1;
+  box-sizing:border-box;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E1513; --surface:#15201D; --ink:#E3ECE9; --muted:#95A8A3; --line:#2A3A36;
+    --pine:#4DB5A1; --pine-ink:#062A24; --pine-soft:#1B3530; --saffron:#E3AA4C; --saffron-soft:#3A2E17;
+    --danger:#EE8A77; --danger-soft:#3C1F1A; --focus:#6BB7F5; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E1513; --surface:#15201D; --ink:#E3ECE9; --muted:#95A8A3; --line:#2A3A36;
+  --pine:#4DB5A1; --pine-ink:#062A24; --pine-soft:#1B3530; --saffron:#E3AA4C; --saffron-soft:#3A2E17;
+  --danger:#EE8A77; --danger-soft:#3C1F1A; --focus:#6BB7F5; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans Arabic","Segoe UI",Tahoma,"Noto Sans Arabic",sans-serif;font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+.muted{color:var(--muted)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+/* header */
+header.top{background:var(--pine);color:var(--pine-ink)}
+header.top .wrap{display:flex;align-items:center;gap:16px;min-height:68px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}
+.brand{display:flex;align-items:center;gap:12px;line-height:1.3;margin-inline-end:auto}
+.brand>div{display:flex;flex-direction:column}
+.brand .mark{width:50px;height:50px;border-radius:10px;background:#fff;display:grid;place-items:center;flex:none}
+.brand .mark img{width:40px;height:40px;object-fit:contain}
+.banner{border-radius:10px;overflow:hidden;background:linear-gradient(120deg,var(--pine) 0%,#0B3E8F 100%) center/cover no-repeat;aspect-ratio:3/1;max-height:200px;width:100%;margin-bottom:18px}
+.gatehero{height:170px;border-radius:10px 10px 0 0;background:linear-gradient(135deg,var(--pine),#0B3E8F);margin:-18px -18px 18px}
+.gate img.full{width:130px;display:block;margin:0 auto 10px}
+.brand b{font-size:19px;font-weight:700}
+.brand>div span{font-size:13px;opacity:.85}
+.who{display:flex;align-items:center;gap:10px;font-size:14px}
+.who img{width:34px;height:34px;border-radius:50%;border:2px solid color-mix(in srgb,var(--pine-ink) 40%,transparent)}
+.role{font-size:12px;padding:1px 9px;border-radius:20px;background:color-mix(in srgb,var(--pine-ink) 16%,transparent)}
+nav.tabs{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto}
+nav.tabs button{background:none;border:0;padding:14px 14px 12px;border-bottom:3px solid transparent;cursor:pointer;color:var(--muted);font-weight:500;white-space:nowrap}
+nav.tabs button[aria-current="page"]{color:var(--ink);border-bottom-color:var(--pine);font-weight:600}
+main{padding:24px 0 60px}
+
+/* generic */
+h2{font-size:21px;margin:0 0 4px;font-weight:700}
+h3{font-size:16px;margin:0 0 10px;font-weight:600}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px}
+.stack>*+*{margin-top:18px}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);padding:7px 14px;border-radius:7px;cursor:pointer;font-weight:500;font-size:14px;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--pine);color:var(--pine-ink);border-color:var(--pine)}
+.btn.danger{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 40%,transparent)}
+.btn.sm{padding:4px 10px;font-size:13px}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0}
+.toolbar input[type=search],.toolbar select{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:7px 10px;min-width:0}
+.toolbar input[type=search]{flex:1 1 220px}
+.toolbar select{flex:0 1 220px}
+.chk{display:inline-flex;align-items:center;gap:6px;font-size:14px;cursor:pointer}
+.empty{padding:36px 18px;text-align:center;color:var(--muted)}
+.tag{display:inline-block;font-size:12px;padding:0 8px;border-radius:5px;background:var(--pine-soft);color:var(--ink);white-space:nowrap}
+.tag.warn{background:var(--saffron-soft)}
+.tag.bad{background:var(--danger-soft)}
+.note{font-size:13px;color:var(--muted)}
+.err{color:var(--danger);font-size:14px}
+
+/* hero ruler */
+.hero{display:grid;grid-template-columns:minmax(200px,260px) 1fr;gap:28px;align-items:end}
+.hero .wk{font-size:15px;color:var(--muted)}
+.hero .wk strong{display:block;font-size:54px;line-height:1;color:var(--ink);font-weight:700;margin:6px 0}
+.ruler{display:grid;grid-template-columns:repeat(17,1fr);gap:4px;align-items:end;height:120px;position:relative}
+.ruler .col{display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;height:100%;position:relative}
+.ruler .bar{background:var(--saffron);border-radius:3px 3px 0 0;min-height:0}
+.ruler .base{height:6px;background:var(--line);margin-top:3px;border-radius:2px}
+.ruler .col.past .base{background:var(--pine)}
+.ruler .col.now .base{background:var(--saffron);height:8px}
+.ruler .col .n{font-size:11px;text-align:center;color:var(--muted);margin-top:4px}
+.ruler .col .c{font-size:11px;text-align:center;color:var(--ink);font-weight:600}
+.figs{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--line);margin-top:22px;padding-top:16px}
+.figs div{flex:1 1 150px;padding:4px 0}
+.figs b{display:block;font-size:26px;font-weight:700;line-height:1.2}
+.figs span{font-size:13px;color:var(--muted)}
+.two{display:grid;grid-template-columns:1.2fr 1fr;gap:18px}
+
+/* lists */
+table.list{width:100%;border-collapse:collapse}
+table.list th{font-size:13px;font-weight:600;color:var(--muted);text-align:start;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+table.list td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+table.list tr.click{cursor:pointer}
+table.list tr.click:hover td{background:color-mix(in srgb,var(--pine-soft) 45%,transparent)}
+.scroll{overflow-x:auto}
+.tname b{display:block;font-weight:600}
+.tname small{color:var(--muted)}
+.mini{display:grid;grid-template-columns:repeat(17,7px);gap:2px;direction:rtl}
+.mini i{height:14px;border-radius:2px;background:var(--line)}
+.mini i.p{background:color-mix(in srgb,var(--pine) 30%,var(--line))}
+.mini i.v{background:var(--saffron)}
+.mini i.now{outline:1.5px solid var(--ink);outline-offset:0}
+
+/* drawer & modal */
+.scrim{position:fixed;inset:0;background:rgba(10,20,18,.45);z-index:20;display:flex;justify-content:flex-start}
+.drawer{background:var(--surface);width:min(560px,100%);height:100%;overflow-y:auto;padding:22px 22px calc(40px + env(safe-area-inset-bottom,0px));padding-top:calc(22px + env(safe-area-inset-top,0px));box-shadow:0 0 0 1px var(--line)}
+.modal-scrim{position:fixed;inset:0;background:rgba(10,20,18,.5);z-index:30;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:var(--surface);border-radius:12px;width:min(620px,100%);max-height:calc(100% - 20px);overflow-y:auto;padding:22px;border:1px solid var(--line)}
+.head{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.head>div{flex:1}
+.x{background:none;border:0;font-size:24px;line-height:1;cursor:pointer;color:var(--muted);padding:2px 6px}
+dl.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0 0 18px}
+dl.kv dt{color:var(--muted);font-size:14px}
+dl.kv dd{margin:0}
+.visit{border:1px solid var(--line);border-radius:9px;padding:12px 14px}
+.visit+.visit{margin-top:10px}
+.visit .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.visit .top b{font-weight:600}
+.visit p{margin:6px 0 0;white-space:pre-wrap}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form .full{grid-column:1/-1}
+.form label{display:flex;flex-direction:column;gap:5px;font-size:14px;font-weight:500}
+.form input,.form select,.form textarea{border:1px solid var(--line);background:var(--paper);border-radius:7px;padding:8px 10px;font-weight:400}
+.form textarea{min-height:90px;resize:vertical}
+.form .hint{font-weight:400;font-size:12px;color:var(--muted)}
+.actions{display:flex;gap:10px;justify-content:flex-start;margin-top:18px;flex-wrap:wrap}
+.drop{border:1.5px dashed var(--line);border-radius:9px;padding:16px;text-align:center;background:var(--paper)}
+.drop.has{border-style:solid;border-color:var(--pine)}
+.people{position:relative}
+.people ul{list-style:none;margin:4px 0 0;padding:4px;border:1px solid var(--line);border-radius:8px;background:var(--surface);position:absolute;inset-inline:0;z-index:4;max-height:260px;overflow:auto}
+.people li button{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;padding:7px 8px;border-radius:6px;cursor:pointer;text-align:start}
+.people li button:hover{background:var(--pine-soft)}
+.av{width:28px;height:28px;border-radius:50%;flex:none}
+.gate{max-width:520px;margin:60px auto;text-align:center}
+/* login */
+.login{display:grid;grid-template-columns:1.05fr 1fr;min-height:560px;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--surface);max-width:1000px;margin:10px auto}
+.login .media{position:relative;background:#27413c linear-gradient(160deg,#0D5A4E 0%,#0B3E8F 100%);color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:28px}
+.login .media::before{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(6,42,36,.92) 0%,rgba(6,42,36,.55) 45%,rgba(6,42,36,.1) 100%)}
+.login .media>*{position:relative}
+.login .chip{background:#fff;border-radius:12px;padding:10px 14px;display:inline-flex;align-self:flex-start;margin-bottom:auto}
+.login .chip img{height:74px;display:block}
+.login .media h1{font-size:26px;line-height:1.35;margin:0 0 6px;font-weight:700}
+.login .media p{margin:0;opacity:.88;font-size:14px}
+.login .side{padding:34px 34px 28px;display:flex;flex-direction:column}
+.login .side h2{font-size:22px}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:4px;margin:18px 0 22px}
+.seg button{border:0;background:none;padding:10px 8px;border-radius:7px;cursor:pointer;font-weight:600;color:var(--muted)}
+.seg button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
+.lfield{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;font-weight:500;font-size:14px}
+.lfield input{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:11px 12px;font-size:16px;letter-spacing:.04em}
+.lfield input:focus{border-color:var(--pine)}
+.lbtn{width:100%;justify-content:center;padding:11px;font-size:16px;margin-top:6px}
+.lfoot{margin-top:auto;padding-top:20px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line)}
+.showpw{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);margin:-6px 0 12px;cursor:pointer}
+.who .out{background:none;border:1px solid color-mix(in srgb,var(--pine-ink) 40%,transparent);color:var(--pine-ink);border-radius:6px;padding:3px 10px;cursor:pointer;font-size:13px}
+@media (max-width:820px){
+  .login{grid-template-columns:1fr;min-height:0}
+  .login .media{min-height:220px;padding:20px}
+  .login .chip img{height:54px}
+  .login .media h1{font-size:21px}
+  .login .side{padding:24px 20px}
+}
+
+/* trainee portal */
+.callout{border:1px solid color-mix(in srgb,var(--saffron) 45%,transparent);background:var(--saffron-soft);border-radius:9px;padding:12px 14px;font-size:14px}
+.callout.ok{border-color:color-mix(in srgb,var(--pine) 40%,transparent);background:var(--pine-soft)}
+.code{font-family:ui-monospace,Consolas,monospace;letter-spacing:.08em;direction:ltr;unicode-bidi:isolate}
+.notice{border-top:1px solid var(--line);padding:12px 0}
+.notice:first-of-type{border-top:0;padding-top:4px}
+.notice b{display:block;font-weight:600}
+.notice p{margin:4px 0 0;white-space:pre-wrap}
+.steps{margin:0;padding-inline-start:20px;font-size:14px}
+.steps li+li{margin-top:6px}
+.progress{height:6px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:8px}
+.progress i{display:block;height:100%;background:var(--pine)}
+.ruler .bar.full{background:var(--pine)}
+.toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));inset-inline-start:50%;transform:translateX(50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:8px;z-index:40;font-size:14px}
+
+@media (max-width:820px){
+  .hero{grid-template-columns:1fr;gap:14px}
+  .hero .wk strong{font-size:44px}
+  .two{grid-template-columns:1fr}
+  .form{grid-template-columns:1fr}
+  .ruler{height:90px;gap:2px}
+  .ruler .col .n{font-size:9px}
+  table.list.resp thead{display:none}
+  table.list.resp tr{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding:12px 4px;border-bottom:1px solid var(--line)}
+  table.list.resp td{border:0;padding:0}
+  table.list.resp td.hide-m{display:none}
+  table.list.resp td.span{grid-column:1/-1}
+}
+@media (prefers-reduced-motion:no-preference){
+  .ruler .bar{transition:height .5s ease}
+}
+
+/* ---- standalone additions ---- */
+.banner{display:flex;align-items:flex-end;padding:18px 22px;color:#fff}
+.banner h1{margin:0;font-size:24px;line-height:1.3;text-wrap:balance}
+.banner p{margin:4px 0 0;opacity:.85;font-size:14px}
+.banner.img{background-size:cover;background-position:center}
+.brand .mark.txt{font-weight:700;color:var(--pine);font-size:13px}
+.linkbtn{background:none;border:0;color:var(--pine);cursor:pointer;padding:0;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.kpi b{display:block;font-size:26px;line-height:1.2;font-weight:700}
+.kpi span{font-size:13px;color:var(--muted)}
+.bar-h{height:8px;border-radius:5px;background:var(--line);overflow:hidden}
+.bar-h i{display:block;height:100%;background:var(--pine)}
+.split{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.pill-st{font-size:12px;padding:1px 9px;border-radius:20px;white-space:nowrap}
+.sec-title{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.sec-title>div{flex:1;min-width:220px}
+.wk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px}
+.wk-grid button{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 0;cursor:pointer;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.wk-grid button.done{background:var(--pine-soft);border-color:color-mix(in srgb,var(--pine) 45%,transparent)}
+.wk-grid button.ret{background:var(--danger-soft)}
+.wk-grid button.now{outline:2px solid var(--saffron);outline-offset:-2px}
+.wk-grid button[disabled]{opacity:.45;cursor:not-allowed}
+.map-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.map-grid label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:500}
+.map-grid select{border:1px solid var(--line);background:var(--paper);border-radius:7px;padding:6px 8px}
+.score{font-size:22px;font-weight:700}
+.ring{--p:0;width:64px;height:64px;border-radius:50%;background:conic-gradient(var(--pine) calc(var(--p)*1%),var(--line) 0);display:grid;place-items:center}
+.ring span{width:50px;height:50px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-weight:700;font-size:14px}
+.offline{background:var(--saffron-soft);color:var(--ink);text-align:center;font-size:13px;padding:4px}
+@media (max-width:820px){.banner h1{font-size:20px}}
+.figs b.num,.kpi b.num,.hero .wk strong.num,.score.num{text-align:right}
+
+
+.demo{background:var(--saffron-soft);border-bottom:1px solid color-mix(in srgb,var(--saffron) 40%,transparent)}
+.demo .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding-block:10px}
+.demo p{margin:0;flex:1 1 280px;font-size:13.5px}
+.demo .btn{font-size:13px;padding:5px 11px}
+.demo details{flex-basis:100%;font-size:13px}
+.demo summary{cursor:pointer;color:var(--muted)}
+
+</style>
+<div lang="ar" dir="rtl">
+<div class="demo"><div class="wrap">
+  <p><b>نسخة تجريبية.</b> البيانات وهمية، وتعود لحالتها الأولى عند تحديث الصفحة. جرّب كل دور:</p>
+  <button class="btn primary" onclick="demoLogin('admin')">دخول كمسؤول</button>
+  <button class="btn" onclick="demoLogin('sup')">دخول كمشرف</button>
+  <button class="btn" onclick="demoLogin('trainee')">دخول كمتدرب</button>
+  <button class="btn" onclick="demoEval()">نموذج تقييم الجهة</button>
+  <details><summary>بيانات الدخول التجريبية</summary>
+  المسؤول: <span class="num">1001</span> / <span class="num">Admin2026x</span> · المشرف: <span class="num">2001</span> / <span class="num">Super2026x</span> · المتدرب: <span class="num">444100101</span> / <span class="num">Train2026x</span><br>
+  تجربة تفعيل حساب متدرب جديد: الرقم التدريبي <span class="num">444100102</span> ورمز التفعيل <span class="num">demo-2026</span>
+  </details>
+</div></div>
+<div id="net" class="offline" hidden>لا يوجد اتصال بالإنترنت.</div>
+<header class="top"><div class="wrap">
+  <div class="brand"><span class="mark txt" id="brandMark">TVTC</span><div><b>منصة التدريب التعاوني وشؤون الخريجين</b><span id="brandSub">الكلية التقنية ببيشة – المؤسسة العامة للتدريب التقني والمهني</span></div></div>
+  <div class="who" id="who"></div>
+</div></header>
+<nav class="tabs" id="tabs" hidden><div class="wrap" id="tabsInner"></div></nav>
+<main><div class="wrap" id="app"><div class="empty">جارٍ فتح المنصة…</div></div></main>
+<div id="drawer"></div><div id="modal"></div><div id="toast"></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+document.documentElement.lang="ar"; document.documentElement.dir="rtl";
+/* نسخة تجريبية: خادم وهمي داخل المتصفح يحاكي api.php ببيانات تجريبية. تُمسح التغييرات عند تحديث الصفحة. */
+(function(){
+"use strict";
+const LISTS={visitTypes:["زيارة ميدانية","زيارة ميدانية ختامية","متابعة هاتفية"],attend:["منتظم","متأخر أحياناً","متغيب"],rating:["ممتاز","جيد جداً","جيد","مقبول","ضعيف"],sectors:["حكومي","صحي","خيري وأهلي","خاص","تعليمي","داخل الكلية"],reg:["مكتمل","غير مكتمل","تم الاتصال","خريج","مطوي قيده"],start:["مباشر","غير مباشر"],grad:["يعمل","يبحث عن عمل","يكمل دراسته","غير معروف"],criteria:["الانضباط والحضور في المواعيد","الالتزام بأنظمة العمل وتعليماته","المهارات الفنية في مجال التخصص","سرعة التعلم واكتساب المهارات","جودة العمل وإتقانه","التعاون والعمل ضمن الفريق","التواصل مع الزملاء والرؤساء","المبادرة وتحمل المسؤولية","تقبّل التوجيهات والملاحظات","السلوك والمظهر العام"]};
+const pad=n=>String(n).padStart(2,"0");
+const dstr=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const now=()=>{ const d=new Date(); return dstr(d)+" "+pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds()); };
+const daysAgo=(n,h)=>{ const d=new Date(Date.now()-n*864e5); if(h!=null) d.setHours(h,15,0); return dstr(d)+" "+pad(d.getHours())+":"+pad(d.getMinutes())+":00"; };
+const START=(()=>{ const d=new Date(); d.setDate(d.getDate()-20); return dstr(d); })();
+const rc=()=>{ const c="abcdefghjkmnpqrstuvwxyz23456789"; let s=""; for(let i=0;i<8;i++) s+=c[Math.floor(Math.random()*c.length)]; return s; };
+const digits=v=>String(v||"").replace(/[٠-٩]/g,d=>String(d.charCodeAt(0)-1632)).replace(/[۰-۹]/g,d=>String(d.charCodeAt(0)-1776)).replace(/\D/g,"");
+const normCode=v=>String(v||"").replace(/[٠-٩]/g,d=>String(d.charCodeAt(0)-1632)).toLowerCase().replace(/[^a-z0-9]/g,"");
+const weekOf=s=>{ const a=new Date(START+"T00:00:00"), b=new Date(String(s).slice(0,10)+"T00:00:00"); return Math.floor(Math.round((b-a)/864e5)/7)+1; };
+const curWeek=()=>Math.min(DB.settings.weeks,Math.max(0,weekOf(dstr(new Date()))));
+
+/* ---------- seed data ---------- */
+let seq=100; const nid=()=>++seq;
+const DB={
+  settings:{college:"الكلية التقنية ببيشة",org:"المؤسسة العامة للتدريب التقني والمهني",semester:"الفصل التدريبي الأول 1448هـ",start:START,weeks:17,contact:"أ. فواز (مسؤول التدريب التعاوني)",requireReport:false,maxUpload:10},
+  users:[
+    {id:1,role:"admin",username:"1001",name:"فواز محمد (تجريبي)",phone:"0500000001",pw:"Admin2026x",active:1,must_change:0,last_login:daysAgo(1,9),code:null},
+    {id:2,role:"supervisor",username:"2001",name:"سالم عبدالله الغامدي",phone:"0500000002",pw:"Super2026x",active:1,must_change:0,last_login:daysAgo(0,8),code:null},
+    {id:3,role:"supervisor",username:"2002",name:"ناصر علي القرني",phone:"0500000003",pw:"Super2026x",active:1,must_change:0,last_login:daysAgo(3,10),code:null},
+  ],
+  trainees:[], visits:[], weekly:[], evals:[], graduates:[], notices:[], audit:[]
+};
+const T=[
+ ["444100101","محمد أحمد الشهري","التقنية الإدارية","إدارة مكتبية","مستشفى الملك عبدالله ببيشة","صحي","خالد سعيد القحطاني","0559998887",2,"مباشر","4.12"],
+ ["444100102","عبدالله سعيد الأكلبي","الحاسب","دعم فني","بلدية محافظة بيشة","حكومي","ماجد ناصر الشهراني","0551231234",2,"مباشر","3.64"],
+ ["444100103","فهد علي الشمراني","الحاسب","شبكات","شركة الاتصالات السعودية – فرع بيشة","خاص","تركي محمد العمري","0557776665",2,"مباشر","3.91"],
+ ["444100104","سعد محمد الدوسري","الحاسب","شبكات","جامعة بيشة – عمادة تقنية المعلومات","تعليمي","أحمد حسن الزهراني","0554443332",3,"مباشر","3.28"],
+ ["444100105","يوسف خالد العسيري","الكهربائية","قوى كهربائية","الشركة السعودية للكهرباء – بيشة","خاص","سلطان فهد الحارثي","0553332221",3,"غير مباشر","3.05"],
+ ["444100106","عمر ناصر الأسمري","الكهربائية","قوى كهربائية","الشركة السعودية للكهرباء – بيشة","خاص","سلطان فهد الحارثي","0553332221",3,"مباشر","3.77"],
+ ["444100107","تركي عبدالرحمن البيشي","التقنية الإدارية","محاسبة","جمعية البر الخيرية ببيشة","خيري وأهلي","عبدالعزيز صالح","0552221110",2,"",""],
+ ["444100108","ماجد سلمان الشهري","الميكانيكية","إنتاج","مصنع بيشة للخرسانة","خاص","","",null,"","3.40"],
+ ["444100109","راكان فيصل القحطاني","التقنية الإدارية","إدارة مكتبية","مكتب التعليم ببيشة","حكومي","هادي علي","0550009998",null,"مباشر","3.55"],
+ ["444100110","نواف حمد الغامدي","الحاسب","دعم فني","الكلية التقنية ببيشة – قسم الحاسب","داخل الكلية","م. عبدالرحمن الخثعمي","0505778154",3,"مباشر","4.40"],
+];
+T.forEach((r,i)=>DB.trainees.push({id:i+1,acad:r[0],name:r[1],nid:"10"+String(98765400+i*1117).slice(0,8),phone:"055"+String(1112233+i*111).slice(0,7),dept:r[2],specialty:r[3],entity:r[4],sector:r[5],field_supervisor:r[6]||null,field_supervisor_phone:r[7]||null,supervisor_id:r[8],reg_status:"مكتمل",start_status:r[9]||null,gpa:r[10]||null,letter_no:"48/"+(310+i),notes:null,user_id:null,eval_token:null}));
+// trainee accounts: first is activated (password Train2026x), second waits with a known code
+DB.users.push({id:10,role:"trainee",username:"444100101",name:"محمد أحمد الشهري",phone:null,pw:"Train2026x",active:1,must_change:0,last_login:daysAgo(1,20),code:null}); DB.trainees[0].user_id=10;
+DB.users.push({id:11,role:"trainee",username:"444100102",name:"عبدالله سعيد الأكلبي",phone:null,pw:null,active:1,must_change:0,last_login:null,code:"demo2026"}); DB.trainees[1].user_id=11;
+[3,4,6].forEach((ti,k)=>{ const id=12+k; DB.users.push({id,role:"trainee",username:DB.trainees[ti-1].acad,name:DB.trainees[ti-1].name,phone:null,pw:null,active:1,must_change:0,last_login:null,code:rc()}); DB.trainees[ti-1].user_id=id; });
+const V=(t,ago,type,att,rat,by,notes)=>DB.visits.push({id:nid(),trainee_id:t,visit_date:daysAgo(ago).slice(0,10),type,attendance:att,rating:rat,met_field:1,notes,has_file:1,report_name:"تقرير-زيارة.pdf",report_url:null,created_by:by,created_at:daysAgo(ago,13)});
+V(1,12,"زيارة ميدانية","منتظم","ممتاز",2,"المتدرب منتظم ويعمل في قسم السجلات الطبية، أشاد به المشرف الميداني.");
+V(1,3,"متابعة هاتفية","منتظم","ممتاز",2,"");
+V(2,10,"زيارة ميدانية","متأخر أحياناً","جيد",2,"نُبّه المتدرب إلى الالتزام بمواعيد الحضور.");
+V(3,9,"زيارة ميدانية","منتظم","جيد جداً",2,"يعمل مع فريق الشبكات على تمديد الكابلات وتهيئة المحولات.");
+V(4,15,"زيارة ميدانية","منتظم","جيد",3,"");
+V(6,4,"زيارة ميدانية","منتظم","جيد جداً",3,"");
+V(10,2,"زيارة ميدانية","منتظم","ممتاز",3,"متميز في الدعم الفني لمعامل القسم.");
+const W=(t,w,st,tasks,sk,h,com)=>DB.weekly.push({id:nid(),trainee_id:t,week:w,tasks,skills:sk,challenges:null,hours:h,has_file:0,file_name:null,status:st,sup_comment:com||null,reviewed_at:st==="submitted"?null:daysAgo(2,11),submitted_at:daysAgo(Math.max(0,(curWeek()-w)*7+1),19)});
+W(1,1,"reviewed","استلام المهام والتعرف على أقسام المستشفى وأنظمة الأرشفة الإلكترونية.","التعامل مع نظام الأرشفة",30,"بداية موفقة، استمر.");
+W(1,2,"reviewed","أرشفة ملفات المرضى الورقية ورفعها للنظام، وتنظيم مراسلات القسم الإدارية.","الطباعة السريعة، تصنيف الوثائق",32,"");
+W(2,1,"submitted","تهيئة أجهزة الحاسب الجديدة في قسم الرخص وتثبيت برامج المكتب.","تثبيت أنظمة التشغيل",28);
+W(3,1,"returned","العمل مع الفريق.","",null,"اكتب المهام بالتفصيل: ما الأجهزة؟ وما الذي نفذته بنفسك؟");
+W(3,2,"submitted","تمديد كابلات Cat6 في الدور الثاني، وترقيم المنافذ في لوحة التوزيع، واختبار الاتصال.","استخدام جهاز فحص الكابلات، الترقيم",34);
+W(10,2,"submitted","صيانة 6 أجهزة في معمل الشبكات واستبدال وحدات التغذية، وتحديث أنظمة التشغيل.","تشخيص أعطال العتاد",30);
+DB.evals.push({id:nid(),trainee_id:10,evaluator_name:"م. عبدالرحمن الخثعمي",evaluator_title:"مدرب – قسم الحاسب",evaluator_phone:"0505778154",scores:[5,5,5,4,5,5,4,5,5,5],total:96,recommend:"أوصي بتوظيفه",comments:"متدرب مبادر ومتقن لعمله.",submitted_at:daysAgo(1,12)});
+DB.trainees[9].eval_token="demo"+rc()+rc()+rc();
+DB.graduates.push(
+ {id:nid(),acad:"443100201",name:"خالد مسفر الشهري",phone:"0551010101",email:null,dept:"الحاسب",specialty:"شبكات",gpa:"3.80",grad_term:"الفصل الثالث 1447هـ",status:"يعمل",employer:"شركة الاتصالات السعودية",job_title:"فني شبكات",sector:"خاص",employed_on:"2026-07-01",last_contact:daysAgo(20).slice(0,10),notes:null},
+ {id:nid(),acad:"443100202",name:"بندر عوض الأكلبي",phone:"0552020202",email:null,dept:"التقنية الإدارية",specialty:"محاسبة",gpa:"3.20",grad_term:"الفصل الثالث 1447هـ",status:"يبحث عن عمل",employer:null,job_title:null,sector:null,employed_on:null,last_contact:daysAgo(40).slice(0,10),notes:"أُرسل له إعلان وظائف جامعة بيشة"},
+ {id:nid(),acad:"443100203",name:"فيصل سعيد القرني",phone:"0553030303",email:null,dept:"الكهربائية",specialty:"قوى كهربائية",gpa:"3.95",grad_term:"الفصل الثالث 1447هـ",status:"يكمل دراسته",employer:"الكلية التقنية بأبها (بكالوريوس)",job_title:null,sector:"تعليمي",employed_on:null,last_contact:null,notes:null},
+ {id:nid(),acad:"443100204",name:"علي حسن العمري",phone:"0554040404",email:null,dept:"الحاسب",specialty:"دعم فني",gpa:"3.10",grad_term:"الفصل الثاني 1447هـ",status:"غير معروف",employer:null,job_title:null,sector:null,employed_on:null,last_contact:null,notes:null});
+DB.notices.push({id:nid(),title:"موعد تسليم التقارير الأسبوعية",body:"يُسلَّم تقرير كل أسبوع قبل نهاية يوم الخميس من خلال صفحة «تقاريري الأسبوعية».",audience:"trainees",created_at:daysAgo(5,10)},
+  {id:nid(),title:"اجتماع مشرفي التدريب التعاوني",body:"الأحد القادم الساعة 10 صباحاً في قاعة الاجتماعات.",audience:"supervisors",created_at:daysAgo(2,9)});
+const log=(u,action,target,tid,details)=>DB.audit.unshift({id:nid(),user_name:u?u.name:null,action,target,target_id:tid==null?null:String(tid),details:details||"",ip:"127.0.0.1",created_at:now()});
+log(DB.users[1],"login","user",2); log(DB.users[3],"login","user",10); log(null,"login_fail","user","2002");
+
+/* ---------- mock server ---------- */
+let SES={user:null}; const CSRF="demo";
+class E extends Error{ constructor(m,s){ super(m); this.status=s||400; } }
+const me=()=>SES.user;
+const need=(...roles)=>{ const u=me(); if(!u) throw new E("انتهت الجلسة. سجّل الدخول مرة أخرى.",401); if(roles.length && !roles.includes(u.role)) throw new E("لا تملك صلاحية تنفيذ هذا الإجراء.",403); return u; };
+const tr=id=>{ const t=DB.trainees.find(x=>x.id===Number(id)); if(!t) throw new E("المتدرب غير موجود.",404); return t; };
+const canTouch=(u,t,un=true)=>u.role==="admin" || (u.role==="supervisor" && (t.supervisor_id===u.id || (un && !t.supervisor_id)));
+const uById=id=>DB.users.find(x=>x.id===Number(id));
+const pub=()=>Object.assign({},DB.settings,{week:curWeek(),today:dstr(new Date()),logo:"",banner:"",lists:LISTS});
+const sessUser=u=>{ const t=u.role==="trainee"?DB.trainees.find(x=>x.user_id===u.id):null; u.last_login=now(); SES.user={id:u.id,role:u.role,name:u.name,username:u.username,trainee_id:t?t.id:null,must_change:!!u.must_change}; return SES.user; };
+const validPw=p=>p.length>=8 && /[A-Za-z]/.test(p) && /\d/.test(p);
+const PW="كلمة المرور 8 خانات على الأقل، وتجمع بين حروف إنجليزية وأرقام.";
+const s=(v,n)=>String(v==null?"":v).trim().slice(0,n||200);
+const nn=v=>v===""||v==null?null:v;
+const guess=headers=>{ const want=[["field_supervisor_phone",["جوال المشرف الميداني","جوال المشرف"]],["field_supervisor",["المشرف الميداني","مشرف الجهة"]],["supervisor_name",["مشرف الكلية","المشرف الأكاديمي"]],["sector",["القطاع","قطاع الجهة"]],["letter_no",["رقم الخطاب"]],["acad",["الرقم التدريبي","رقم المتدرب","الرقم الأكاديمي"]],["name",["اسم المتدرب","الاسم","اسم الطالب"]],["nid",["رقم الهوية","السجل المدني","الهوية"]],["phone",["جوال المتدرب","الجوال","رقم الجوال"]],["dept",["القسم"]],["specialty",["التخصص"]],["gpa",["المعدل التراكمي","المعدل"]],["entity",["جهة التدريب","الجهة","مكان التدريب"]]];
+  const norm=x=>String(x||"").replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي").replace(/\s+/g," ").trim().toLowerCase(); const map={}, used={};
+  want.forEach(([f,c])=>{ let hit=-1; headers.forEach((h,i)=>{ if(hit<0 && !used[i] && c.some(x=>norm(h)===norm(x))) hit=i; }); if(hit<0) headers.forEach((h,i)=>{ if(hit<0 && !used[i] && c.some(x=>x.length>3 && norm(h).includes(norm(x)))) hit=i; }); if(hit>=0){ map[f]=hit; used[hit]=1; } });
+  return map; };
+const IMP={};
+
+async function handle(a,inp){
+  switch(a){
+  case "session": return {user:me(),csrf:CSRF,settings:pub()};
+  case "login": { const kind=inp.kind||"staff", un=digits(inp.username), pw=String(inp.password||"");
+    if(!un||!pw) throw new E("أدخل رقم الدخول وكلمة المرور.");
+    const u=DB.users.find(x=>x.username===un && (kind==="trainee"?x.role==="trainee":x.role!=="trainee"));
+    if(u && !u.pw && u.code) throw new E("حسابك غير مفعّل بعد. اختر «فعّل حسابك برمز التفعيل» أسفل نموذج الدخول.");
+    if(!u || u.pw!==pw){ log(null,"login_fail","user",un); throw new E(kind==="trainee"?"الرقم التدريبي أو كلمة المرور غير صحيحة.":"الرقم الوظيفي أو كلمة المرور غير صحيحة."); }
+    if(!u.active) throw new E("الحساب موقوف. تواصل مع مسؤول التدريب التعاوني.",403);
+    const su=sessUser(u); log(su,"login","user",u.id); return {user:su,csrf:CSRF}; }
+  case "activate": { const u=DB.users.find(x=>x.role==="trainee" && x.username===digits(inp.acad));
+    if(!u||!u.code||u.code!==normCode(inp.code)) throw new E("الرقم التدريبي أو رمز التفعيل غير صحيح، أو استُخدم الرمز من قبل.");
+    if(!validPw(String(inp.password||""))) throw new E(PW);
+    u.pw=String(inp.password); u.code=null; const su=sessUser(u); log(su,"activate","user",u.id); return {user:su,csrf:CSRF}; }
+  case "logout": log(me(),"logout","user",me()&&me().id); SES.user=null; return {csrf:CSRF};
+  case "password": { const u=need(), row=uById(u.id);
+    if(row.pw!==String(inp.current||"")) throw new E("كلمة المرور الحالية غير صحيحة.");
+    if(!validPw(String(inp.new||""))) throw new E(PW);
+    row.pw=String(inp.new); row.must_change=0; SES.user.must_change=false; log(u,"password","user",u.id); return {user:SES.user}; }
+  case "bootstrap": { const u=need("admin","supervisor"), adm=u.role==="admin";
+    const trainees=DB.trainees.map(t=>{ const x=Object.assign({},t); if(adm){ const us=t.user_id?uById(t.user_id):null; x.activation_code=us?us.code:null; x.activated=us&&us.pw?1:0; x.account_active=us?us.active:0; x.trainee_last_login=us?us.last_login:null; } else { delete x.nid; delete x.letter_no; delete x.user_id; } return x; });
+    return {trainees, visits:DB.visits.slice().sort((a,b)=>a.visit_date<b.visit_date?1:-1), staff:DB.users.filter(x=>x.role!=="trainee").map(x=>({id:x.id,role:x.role,username:x.username,name:x.name,phone:x.phone,active:x.active,last_login:x.last_login,must_change:x.must_change})),
+      weekly:DB.weekly.map(w=>({id:w.id,trainee_id:w.trainee_id,week:w.week,status:w.status,submitted_at:w.submitted_at,reviewed_at:w.reviewed_at})), evals:DB.evals.map(e=>({id:e.id,trainee_id:e.trainee_id,total:e.total,recommend:e.recommend,submitted_at:e.submitted_at,evaluator_name:e.evaluator_name})),
+      notices:DB.notices.filter(n=>adm||n.audience!=="trainees") }; }
+  case "trainee.save": { const u=need("admin"), id=Number(inp.id||0);
+    const d={acad:digits(inp.acad),name:s(inp.name,150),nid:nn(digits(inp.nid)),phone:nn(digits(inp.phone)),dept:nn(s(inp.dept)),specialty:nn(s(inp.specialty)),gpa:nn(s(inp.gpa,10)),entity:nn(s(inp.entity)),sector:nn(s(inp.sector)),field_supervisor:nn(s(inp.field_supervisor)),field_supervisor_phone:nn(digits(inp.field_supervisor_phone)),supervisor_id:inp.supervisor_id?Number(inp.supervisor_id):null,reg_status:nn(s(inp.reg_status)),start_status:nn(s(inp.start_status)),letter_no:nn(s(inp.letter_no)),notes:nn(s(inp.notes,2000))};
+    if(!d.name || !/^\d{5,20}$/.test(d.acad)) throw new E("أكمل اسم المتدرب والرقم التدريبي (أرقام فقط).");
+    if(DB.trainees.some(t=>t.acad===d.acad && t.id!==id)) throw new E("يوجد متدرب آخر بهذا الرقم التدريبي.");
+    if(id){ Object.assign(tr(id),d); log(u,"update","trainee",id,d.name); return {id}; }
+    const nt=Object.assign({id:nid(),user_id:null,eval_token:null},d); DB.trainees.push(nt); log(u,"create","trainee",nt.id,d.name); return {id:nt.id}; }
+  case "trainee.delete": { const u=need("admin"), t=tr(inp.id); DB.trainees=DB.trainees.filter(x=>x!==t); DB.visits=DB.visits.filter(v=>v.trainee_id!==t.id); DB.weekly=DB.weekly.filter(v=>v.trainee_id!==t.id); DB.evals=DB.evals.filter(v=>v.trainee_id!==t.id); if(t.user_id) DB.users=DB.users.filter(x=>x.id!==t.user_id); log(u,"delete","trainee",t.id,t.name); return null; }
+  case "trainee.assign": { const u=need("admin"), sup=inp.supervisor_id?Number(inp.supervisor_id):null; let n=0;
+    DB.trainees.forEach(t=>{ if((inp.entity && t.entity===inp.entity) || (inp.ids||[]).map(Number).includes(t.id)){ t.supervisor_id=sup; n++; } }); log(u,"assign","trainee",null,"عدد "+n); return {count:n}; }
+  case "trainee.status": { const u=need("admin","supervisor"), t=tr(inp.id); if(!canTouch(u,t,false)) throw new E("هذا المتدرب غير مسند إليك.",403); t.start_status=nn(inp.start_status); log(u,"start_status","trainee",t.id,t.start_status||""); return null; }
+  case "import.preview": { need("admin"); const f=inp.file; if(!(f instanceof Blob)) throw new E("اختر ملف الكشف.");
+    if(!window.XLSX) throw new E("تعذّر تحميل قارئ ملفات Excel. تحقّق من الإنترنت.");
+    const wb=XLSX.read(await f.arrayBuffer(),{type:"array"}); let rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:false,defval:""}).map(r=>r.map(c=>String(c).trim())).filter(r=>r.join("")!=="");
+    if(rows.length<2) throw new E("الملف لا يحتوي على بيانات.");
+    let hi=0; for(let i=0;i<Math.min(10,rows.length);i++){ if(Object.keys(guess(rows[i])).length>=2){ hi=i; break; } }
+    const headers=rows[hi], data=rows.slice(hi+1), token="imp"+nid(); IMP[token]={headers,rows:data};
+    return {token,headers,sample:data.slice(0,5),count:data.length,mapping:guess(headers)}; }
+  case "import.commit": { const u=need("admin"), p=IMP[inp.token]; if(!p) throw new E("انتهت صلاحية الملف المرفوع. ارفعه مرة أخرى."); const m=inp.mapping||{};
+    if(m.acad==null||m.name==null) throw new E("حدّد عمود الرقم التدريبي وعمود الاسم.");
+    const g=(r,k)=>m[k]!=null?String(r[m[k]]||"").trim():null; let added=0,updated=0,skipped=0; const unk={};
+    p.rows.forEach(r=>{ const acad=digits(g(r,"acad")), name=g(r,"name"); if(!/^\d{5,20}$/.test(acad)||!name){ skipped++; return; }
+      if(inp.target==="graduates"){ let x=DB.graduates.find(q=>q.acad===acad); const d={acad,name}; ["phone","dept","specialty","gpa"].forEach(k=>{ const v=g(r,k); if(v) d[k]=k==="phone"?digits(v):v; }); if(x){ Object.assign(x,d); updated++; } else { DB.graduates.push(Object.assign({id:nid(),status:"غير معروف"},d)); added++; } return; }
+      const d={name}; ["nid","phone","field_supervisor_phone"].forEach(k=>{ const v=g(r,k); if(v) d[k]=digits(v); }); ["dept","specialty","gpa","entity","field_supervisor","letter_no"].forEach(k=>{ const v=g(r,k); if(v) d[k]=v; });
+      const sec=g(r,"sector"); if(sec && LISTS.sectors.includes(sec)) d.sector=sec;
+      const sn=g(r,"supervisor_name"); if(sn){ const su=DB.users.find(x=>x.role==="supervisor" && x.name.replace(/\s+/g," ")===sn.replace(/\s+/g," ")); if(su) d.supervisor_id=su.id; else unk[sn]=1; }
+      const x=DB.trainees.find(t=>t.acad===acad); if(x){ Object.assign(x,d); updated++; } else { DB.trainees.push(Object.assign({id:nid(),acad,supervisor_id:null,user_id:null,eval_token:null},d)); added++; } });
+    delete IMP[inp.token]; log(u,"import",inp.target==="graduates"?"graduates":"trainees",null,"أضيف "+added+"، حُدّث "+updated); return {added,updated,skipped,unknownSupervisors:Object.keys(unk)}; }
+  case "visit.save": { const u=need("admin","supervisor"), t=tr(inp.trainee_id); if(!canTouch(u,t)) throw new E("هذا المتدرب مسند إلى مشرف آخر.",403);
+    const date=String(inp.visit_date||""); if(!/^\d{4}-\d{2}-\d{2}$/.test(date) || date>dstr(new Date(Date.now()+864e5))) throw new E("حدّد تاريخ زيارة صحيحاً، ولا يكون في المستقبل.");
+    const url=s(inp.report_url,500); if(url && !/^https:\/\//i.test(url)) throw new E("رابط التقرير يجب أن يبدأ بـ https://");
+    const f=inp.file instanceof File && inp.file.size ? inp.file : null;
+    if(f && !/pdf|png|jpe?g|webp/i.test(f.type)) throw new E("نوع الملف غير مدعوم. أرفق ملف PDF أو صورة (PNG أو JPG).");
+    const v={id:nid(),trainee_id:t.id,visit_date:date,type:inp.type||LISTS.visitTypes[0],attendance:nn(inp.attendance),rating:nn(inp.rating),met_field:inp.met_field==="1"||inp.met_field===1?1:0,notes:nn(s(inp.notes,4000)),has_file:f?1:0,report_name:f?f.name:null,report_url:nn(url),created_by:u.id,created_at:now()};
+    DB.visits.push(v); if(!t.supervisor_id && u.role==="supervisor") t.supervisor_id=u.id; log(u,"create","visit",v.id,t.name+" "+date); return {id:v.id}; }
+  case "visit.delete": { const u=need("admin","supervisor"), v=DB.visits.find(x=>x.id===Number(inp.id)); if(!v) throw new E("الزيارة غير موجودة.",404);
+    if(u.role!=="admin" && v.created_by!==u.id) throw new E("يحذف الزيارة من سجّلها أو المسؤول فقط.",403); DB.visits=DB.visits.filter(x=>x!==v); log(u,"delete","visit",v.id); return null; }
+  case "weekly.list": { const u=need("admin","supervisor");
+    return DB.weekly.filter(w=>{ const t=DB.trainees.find(x=>x.id===w.trainee_id); return t && (u.role==="admin" || t.supervisor_id===u.id) && (!inp.trainee_id || w.trainee_id===Number(inp.trainee_id)); })
+      .map(w=>{ const t=DB.trainees.find(x=>x.id===w.trainee_id); return Object.assign({},w,{trainee_name:t.name,entity:t.entity}); }).sort((a,b)=>a.submitted_at<b.submitted_at?1:-1); }
+  case "weekly.review": { const u=need("admin","supervisor"), w=DB.weekly.find(x=>x.id===Number(inp.id)); if(!w) throw new E("التقرير غير موجود.",404);
+    const t=DB.trainees.find(x=>x.id===w.trainee_id); if(u.role!=="admin" && t.supervisor_id!==u.id) throw new E("هذا التقرير لمتدرب غير مسند إليك.",403);
+    const st=inp.status==="returned"?"returned":"reviewed"; if(st==="returned" && !s(inp.comment)) throw new E("اكتب سبب الإعادة ليعرف المتدرب ما يعدّله.");
+    Object.assign(w,{status:st,sup_comment:nn(s(inp.comment,2000)),reviewed_at:now()}); log(u,"review","weekly",w.id,st); return null; }
+  case "weekly.submit": { const u=need("trainee"), week=Number(inp.week||0), cw=curWeek();
+    if(week<1||week>DB.settings.weeks||week>Math.max(1,cw)) throw new E("اختر أسبوعاً صحيحاً لم يأتِ بعد.");
+    const tasks=s(inp.tasks,4000); if(tasks.length<20) throw new E("اكتب المهام التي أنجزتها هذا الأسبوع بتفصيل أكثر (20 حرفاً على الأقل).");
+    let w=DB.weekly.find(x=>x.trainee_id===u.trainee_id && x.week===week); if(w && w.status==="reviewed") throw new E("روجع تقرير هذا الأسبوع ولا يمكن تعديله.");
+    const f=inp.file instanceof File && inp.file.size ? inp.file : null;
+    const d={tasks,skills:nn(s(inp.skills,2000)),challenges:nn(s(inp.challenges,2000)),hours:inp.hours===""||inp.hours==null?null:Number(digits(inp.hours))||Number(inp.hours)||null,status:"submitted",submitted_at:now()};
+    if(f) Object.assign(d,{has_file:1,file_name:f.name});
+    if(w) Object.assign(w,d); else DB.weekly.push(Object.assign({id:nid(),trainee_id:u.trainee_id,week,has_file:0,file_name:null,sup_comment:null,reviewed_at:null},d));
+    log(u,"submit","weekly",u.trainee_id,"الأسبوع "+week); return null; }
+  case "eval.link": { const u=need("admin","supervisor"), t=tr(inp.trainee_id); if(!canTouch(u,t,false)) throw new E("هذا المتدرب غير مسند إليك.",403);
+    if(!t.eval_token || inp.renew){ t.eval_token="demo"+rc()+rc()+rc(); log(u,"eval_link","trainee",t.id); }
+    return {url:"https://كليتكم.edu.sa/coop/eval.php?t="+t.eval_token,token:t.eval_token}; }
+  case "eval.get": { const u=need("admin","supervisor"), e=DB.evals.find(x=>x.id===Number(inp.id)); if(!e) throw new E("التقييم غير موجود.",404); const t=DB.trainees.find(x=>x.id===e.trainee_id);
+    if(u.role!=="admin" && t.supervisor_id!==u.id) throw new E("لا تملك صلاحية عرض هذا التقييم.",403); return Object.assign({},e,{trainee_name:t.name}); }
+  case "eval.delete": { const u=need("admin"); DB.evals=DB.evals.filter(x=>x.id!==Number(inp.id)); log(u,"delete","eval",inp.id); return null; }
+  case "access.issue": { const u=need("admin"); let ids=(inp.ids||[]).map(Number); if(inp.all) ids=DB.trainees.filter(t=>!t.user_id).map(t=>t.id); let n=0;
+    ids.forEach(id=>{ const t=DB.trainees.find(x=>x.id===id); if(!t) return; const code=rc();
+      if(t.user_id){ if(!inp.reset) return; Object.assign(uById(t.user_id),{code,pw:null,active:1}); }
+      else { const nu={id:nid(),role:"trainee",username:t.acad,name:t.name,phone:t.phone,pw:null,active:1,must_change:0,last_login:null,code}; DB.users.push(nu); t.user_id=nu.id; } n++; });
+    log(u,"access_issue","trainee",null,"عدد "+n); return {count:n}; }
+  case "access.toggle": { const u=need("admin"), t=tr(inp.id); if(!t.user_id) throw new E("لم يُفعَّل حساب لهذا المتدرب بعد."); const x=uById(t.user_id); x.active=x.active?0:1; log(u,"access_toggle","trainee",t.id); return null; }
+  case "staff.save": { const u=need("admin"), id=Number(inp.id||0), name=s(inp.name,150), un=digits(inp.username);
+    if(!name || !/^\d{3,20}$/.test(un)) throw new E("أكمل الاسم والرقم الوظيفي (أرقام فقط).");
+    if(DB.users.some(x=>x.role!=="trainee" && x.username===un && x.id!==id)) throw new E("هذا الرقم الوظيفي مسجّل مسبقاً.");
+    if(id){ Object.assign(uById(id),{name,username:un,phone:nn(digits(inp.phone))}); log(u,"update","staff",id,name); return {id,tempPassword:null}; }
+    const pw=rc()+"7"; const nu={id:nid(),role:"supervisor",username:un,name,phone:nn(digits(inp.phone)),pw,active:1,must_change:1,last_login:null,code:null}; DB.users.push(nu); log(u,"create","staff",nu.id,name); return {id:nu.id,tempPassword:pw}; }
+  case "staff.reset": { const u=need("admin"), x=uById(inp.id); const pw=rc()+"7"; Object.assign(x,{pw,must_change:1}); log(u,"reset_password","staff",x.id,x.name); return {tempPassword:pw}; }
+  case "staff.toggle": { const u=need("admin"), x=uById(inp.id); x.active=x.active?0:1; log(u,"toggle","staff",x.id); return null; }
+  case "staff.delete": { const u=need("admin"), x=uById(inp.id); DB.users=DB.users.filter(q=>q!==x); DB.trainees.forEach(t=>{ if(t.supervisor_id===x.id) t.supervisor_id=null; }); log(u,"delete","staff",x.id,x.name); return null; }
+  case "grad.list": need("admin"); return DB.graduates.slice().sort((a,b)=>String(b.grad_term).localeCompare(String(a.grad_term),"ar")||a.name.localeCompare(b.name,"ar"));
+  case "grad.save": { const u=need("admin"), id=Number(inp.id||0); const d={acad:nn(digits(inp.acad)),name:s(inp.name,150),phone:nn(digits(inp.phone)),email:nn(s(inp.email)),dept:nn(s(inp.dept)),specialty:nn(s(inp.specialty)),gpa:nn(s(inp.gpa)),grad_term:nn(s(inp.grad_term)),status:inp.status||"غير معروف",employer:nn(s(inp.employer)),job_title:nn(s(inp.job_title)),sector:nn(s(inp.sector)),employed_on:nn(inp.employed_on),last_contact:nn(inp.last_contact),notes:nn(s(inp.notes,2000))};
+    if(!d.name) throw new E("أدخل اسم الخريج."); if(id){ Object.assign(DB.graduates.find(g=>g.id===id),d); } else DB.graduates.push(Object.assign({id:nid()},d)); log(u,id?"update":"create","graduate",id,d.name); return {id}; }
+  case "grad.delete": { const u=need("admin"); DB.graduates=DB.graduates.filter(g=>g.id!==Number(inp.id)); log(u,"delete","graduate",inp.id); return null; }
+  case "grad.fromTrainees": { const u=need("admin"); let n=0; (inp.ids||[]).map(Number).forEach(id=>{ const t=DB.trainees.find(x=>x.id===id); if(!t||DB.graduates.some(g=>g.acad===t.acad)) return;
+      DB.graduates.push({id:nid(),acad:t.acad,name:t.name,phone:t.phone,email:null,dept:t.dept,specialty:t.specialty,gpa:t.gpa,grad_term:DB.settings.semester,status:"غير معروف"}); t.reg_status="خريج"; n++; }); log(u,"graduate","trainee",null,"عدد "+n); return {count:n}; }
+  case "notice.save": { const u=need("admin"), title=s(inp.title,150); if(!title) throw new E("اكتب عنوان الإعلان."); DB.notices.unshift({id:nid(),title,body:nn(s(inp.body,3000)),audience:inp.audience||"trainees",created_at:now()}); log(u,"create","notice",null,title); return null; }
+  case "notice.delete": { const u=need("admin"); DB.notices=DB.notices.filter(n=>n.id!==Number(inp.id)); log(u,"delete","notice",inp.id); return null; }
+  case "portal": { const u=need("trainee"), t=DB.trainees.find(x=>x.id===u.trainee_id); if(!t) throw new E("لم يُعثر على سجل تدريبك.",404); const su=t.supervisor_id?uById(t.supervisor_id):null;
+    return {t:{acad:t.acad,name:t.name,dept:t.dept,specialty:t.specialty,entity:t.entity,sector:t.sector,field_supervisor:t.field_supervisor,field_supervisor_phone:t.field_supervisor_phone,reg_status:t.reg_status,start_status:t.start_status,supervisor_name:su?su.name:null,supervisor_phone:su?su.phone:null},
+      visits:DB.visits.filter(v=>v.trainee_id===t.id).sort((a,b)=>a.visit_date<b.visit_date?1:-1).map(v=>({visit_date:v.visit_date,type:v.type,attendance:v.attendance,rating:v.rating,met_field:v.met_field})),
+      weekly:DB.weekly.filter(w=>w.trainee_id===t.id).sort((a,b)=>b.week-a.week), notices:DB.notices.filter(n=>n.audience!=="supervisors")}; }
+  case "settings.save": { const u=need("admin"); if(!/^\d{4}-\d{2}-\d{2}$/.test(inp.semester_start||"")) throw new E("حدّد تاريخ بداية الفصل.");
+    Object.assign(DB.settings,{college:s(inp.college_name)||DB.settings.college,semester:s(inp.semester_label),start:inp.semester_start,weeks:Math.max(1,Math.min(30,Number(inp.semester_weeks)||17)),contact:s(inp.admin_contact),requireReport:!!inp.require_visit_report,maxUpload:Number(inp.max_upload_mb)||10}); log(u,"settings","settings"); return null; }
+  case "brand.upload": throw new E("رفع الشعار متاح في النسخة الفعلية على الخادم.");
+  case "audit.list": { need("admin"); const k=inp.kind, L=["login","login_fail","logout","activate"]; const rows=DB.audit.filter(e=>!k||(k==="login"?L.includes(e.action):!L.includes(e.action))).slice(0,300);
+    const cnt=(a,d)=>DB.audit.filter(e=>e.action===a).length; const roles=["admin","supervisor","trainee"].map(r=>({role:r,n:DB.users.filter(u=>u.role===r).length,logged:DB.users.filter(u=>u.role===r&&u.last_login).length}));
+    return {rows,stats:{today:cnt("login"),week:cnt("login"),fails:cnt("login_fail")},roles}; }
+  default: throw new E("طلب غير معروف.",404);
+  }
+}
+
+const realFetch=window.fetch.bind(window);
+window.fetch=async function(url,opt){
+  const u=String(url);
+  if(!u.startsWith("api.php")) return realFetch(url,opt);
+  const a=new URLSearchParams(u.split("?")[1]||"").get("a");
+  let inp={};
+  if(opt && opt.body){ if(opt.body instanceof FormData){ opt.body.forEach((v,k)=>inp[k]=v); } else { try{ inp=JSON.parse(opt.body); }catch(e){} } }
+  await new Promise(r=>setTimeout(r,120));
+  try{ const r=await handle(a,inp); const data=r===undefined?null:JSON.parse(JSON.stringify(r)); return new Response(JSON.stringify({ok:true,data}),{status:200,headers:{"Content-Type":"application/json"}}); }
+  catch(e){ return new Response(JSON.stringify({ok:false,error:e.message}),{status:e.status||500,headers:{"Content-Type":"application/json"}}); }
+};
+
+/* ---------- demo-only UI ---------- */
+function toast(m){ const t=document.getElementById("toast"); t.innerHTML='<div class="toast" role="status">'+m+'</div>'; setTimeout(()=>t.innerHTML="",3200); }
+document.addEventListener("click",ev=>{
+  const a=ev.target.closest('a[href^="api.php"]');
+  if(a){ ev.preventDefault(); ev.stopPropagation(); toast(a.href.includes("kind=backup")?"النسخ الاحتياطي يعمل في النسخة الفعلية على الخادم.":a.href.includes("a=file")?"في النسخة التجريبية لا تُحفظ الملفات المرفوعة. في النسخة الفعلية يُفتح التقرير هنا.":"التصدير إلى CSV يعمل في النسخة الفعلية على الخادم."); }
+},true);
+const ESC=v=>String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+window.demoEval=function(){
+  const t=DB.trainees.find(x=>x.eval_token && !DB.evals.some(e=>e.trainee_id===x.id)) || DB.trainees.find(x=>!DB.evals.some(e=>e.trainee_id===x.id));
+  if(!t){ toast("كل المتدربين قُيّموا. احذف تقييماً من صفحة المتدرب لتجربة النموذج."); return; }
+  const scale=[[5,"ممتاز"],[4,"جيد جداً"],[3,"جيد"],[2,"مقبول"],[1,"ضعيف"]];
+  document.getElementById("modal").innerHTML='<div class="modal-scrim"><div class="modal" role="dialog" aria-modal="true" style="width:min(760px,100%)"><div class="head"><div><h2>نموذج تقييم جهة التدريب</h2><div class="muted">هذا ما يراه المشرف الميداني عند فتح الرابط (دون حساب).</div></div><button class="x" id="dex" aria-label="إغلاق">×</button></div>'+
+    '<dl class="kv"><dt>المتدرب</dt><dd><b>'+ESC(t.name)+'</b></dd><dt>جهة التدريب</dt><dd>'+ESC(t.entity||"")+'</dd></dl><form id="deform" class="form"><label>اسم المقيّم<input name="n" value="'+ESC(t.field_supervisor||"")+'"></label><label>الصفة الوظيفية<input name="ti" placeholder="مثال: مشرف قسم الصيانة"></label></form>'+
+    LISTS.criteria.map((c,i)=>'<div style="padding:12px 0;border-top:1px solid var(--line)"><b style="display:block;margin-bottom:8px">'+(i+1)+'. '+c+'</b><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">'+scale.map(([n,l])=>'<label class="btn sm" style="justify-content:center;flex-direction:column;gap:0"><input type="radio" name="s'+i+'" value="'+n+'" form="deform"'+(n===4?' checked':'')+'> '+l+'</label>').join("")+'</div></div>').join("")+
+    '<div class="err" id="deerr"></div><div class="actions"><button class="btn primary" id="desend">إرسال التقييم</button></div></div></div>';
+  document.getElementById("dex").onclick=()=>document.getElementById("modal").innerHTML="";
+  document.getElementById("desend").onclick=()=>{ const f=document.getElementById("deform"), name=f.elements.n.value.trim(); if(!name){ document.getElementById("deerr").textContent="اكتب اسم المقيّم."; return; }
+    const sc=LISTS.criteria.map((_,i)=>Number((f.querySelector('input[name=s'+i+']:checked')||{}).value||0)); const total=Math.round(sc.reduce((a,b)=>a+b,0)/50*1000)/10;
+    DB.evals.unshift({id:nid(),trainee_id:t.id,evaluator_name:name,evaluator_title:f.elements.ti.value.trim()||null,evaluator_phone:null,scores:sc,total,recommend:"أوصي بتوظيفه",comments:null,submitted_at:now()}); log(null,"field_eval","trainee",t.id,name+" "+total+"%");
+    document.getElementById("modal").innerHTML=""; toast("وصل تقييم «"+t.name+"» بنسبة "+total+"%. تجده في «تقييم الجهات»."); window.dispatchEvent(new Event("online")); };
+};
+window.demoLogin=async function(kind){
+  const cred={admin:["staff","1001","Admin2026x"],sup:["staff","2001","Super2026x"],trainee:["trainee","444100101","Train2026x"]}[kind];
+  const lo=document.querySelector('[data-act=logout]'); if(lo){ lo.click(); await new Promise(r=>setTimeout(r,400)); }
+  const tab=document.querySelector('[data-ltab='+cred[0]+']'); if(tab) tab.click(); await new Promise(r=>setTimeout(r,100));
+  const lg=document.querySelector('[data-tmode=login]'); if(lg){ lg.click(); await new Promise(r=>setTimeout(r,100)); }
+  const u=document.getElementById("luser"), p=document.getElementById("lpw"); if(!u||!p) return;
+  u.value=cred[1]; p.value=cred[2]; document.getElementById("lbtn").click();
+};
+})();
+
+</script>
+<script>
+/* منصة التدريب التعاوني وشؤون الخريجين — الواجهة */
+(function(){
+"use strict";
+
+const S = {
+  settings:null, user:null, csrf:"", view:"", data:null, portal:null, loading:false,
+  f:{q:"",dept:"",spec:"",entity:"",sector:"",st:"",sup:"",acc:"",mine:true},
+  vf:{q:"",sup:""}, wf:{status:"submitted",q:""}, gf:{q:"",st:"",term:""}, af:{kind:""},
+  openT:null, loginTab:"trainee", tMode:"login", grads:null, audit:null, weekly:null, wkSel:null, sel:{}
+};
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = v => String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const hijF = new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura-nu-latn",{day:"numeric",month:"long",year:"numeric"});
+const gregF = new Intl.DateTimeFormat("ar-SA-u-ca-gregory-nu-latn",{day:"numeric",month:"short",year:"numeric"});
+const timeF = new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura-nu-latn",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"});
+const parseD = s => { const [y,m,d]=String(s).slice(0,10).split("-").map(Number); return new Date(y,(m||1)-1,d||1); };
+const fmtH = s => { try{ return hijF.format(parseD(s)); }catch(e){ return s||""; } };
+const fmtG = s => { try{ return gregF.format(parseD(s)); }catch(e){ return s||""; } };
+const fmtT = s => { try{ return timeF.format(new Date(String(s).replace(" ","T"))); }catch(e){ return s||""; } };
+const iso = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const today = () => iso(new Date());
+const WEEKS = () => S.settings ? S.settings.weeks : 17;
+const weekOf = s => Math.floor((parseD(s)-parseD(S.settings.start))/864e5/7)+1;
+const curWeek = () => Math.min(WEEKS(), Math.max(0, weekOf(today())));
+const digits = v => String(v||"").replace(/[٠-٩]/g,d=>String(d.charCodeAt(0)-1632)).replace(/[۰-۹]/g,d=>String(d.charCodeAt(0)-1776)).replace(/\D/g,"");
+const uniq = a => [...new Set(a.filter(Boolean))].sort((x,y)=>String(x).localeCompare(String(y),"ar"));
+const L = k => S.settings.lists[k];
+const opt = (list,cur,all) => (all!=null?'<option value="">'+esc(all)+'</option>':'')+list.map(e=>'<option'+(String(cur)===String(e)?' selected':'')+'>'+esc(e)+'</option>').join("");
+const fmtCode = c => c ? c.slice(0,4)+"-"+c.slice(4) : "";
+const role = () => S.user ? S.user.role : "none";
+const isAdmin = () => role()==="admin";
+const isStaff = () => role()==="admin" || role()==="supervisor";
+const staffName = id => { const s=S.data && S.data.staff.find(x=>Number(x.id)===Number(id)); return s ? s.name : ""; };
+const tById = id => S.data.trainees.find(t=>Number(t.id)===Number(id));
+const visitsOf = id => S.data.visits.filter(v=>Number(v.trainee_id)===Number(id)).sort((a,b)=>a.visit_date<b.visit_date?1:-1);
+const isMine = t => Number(t.supervisor_id)===Number(S.user.id);
+const canVisit = t => isAdmin() || (role()==="supervisor" && (isMine(t) || !t.supervisor_id));
+const scopeT = () => isAdmin() ? S.data.trainees : S.data.trainees.filter(isMine);
+const scopeV = () => isAdmin() ? S.data.visits : S.data.visits.filter(v=>Number(v.created_by)===Number(S.user.id) || (tById(v.trainee_id) && isMine(tById(v.trainee_id))));
+const waLink = (phone,text) => { let p=digits(phone); if(/^05\d{8}$/.test(p)) p="966"+p.slice(1); else if(/^5\d{8}$/.test(p)) p="966"+p; return /^9665\d{8}$/.test(p) ? "https://wa.me/"+p+"?text="+encodeURIComponent(text) : ""; };
+
+function toast(msg){ const t=$("#toast"); t.innerHTML='<div class="toast" role="status">'+esc(msg)+'</div>'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.innerHTML="",3200); }
+async function copyText(txt,okMsg){ try{ await navigator.clipboard.writeText(txt); toast(okMsg||"نُسخ"); return true; }catch(e){ toast("تعذّر النسخ تلقائياً. انسخ النص يدوياً."); return false; } }
+
+/* ---------- API ---------- */
+async function api(a, body, form){
+  const o={method:"POST",credentials:"same-origin",headers:{"X-CSRF":S.csrf}};
+  if(form){ o.body=body; } else { o.headers["Content-Type"]="application/json"; o.body=JSON.stringify(body||{}); }
+  let r, j;
+  try{ r=await fetch("api.php?a="+encodeURIComponent(a),o); }catch(e){ throw new Error("تعذّر الاتصال بالخادم. تحقّق من الإنترنت وأعد المحاولة."); }
+  try{ j=await r.json(); }catch(e){ throw new Error("استجابة غير متوقعة من الخادم (رمز "+r.status+")."); }
+  if(r.status===401 || r.status===419){ await loadSession(); if(r.status===401){ S.user=null; paint(); } throw new Error(j.error||"انتهت الجلسة."); }
+  if(!j.ok) throw new Error(j.error||"تعذّر تنفيذ الطلب.");
+  return j.data;
+}
+async function loadSession(){
+  const r=await fetch("api.php?a=session",{credentials:"same-origin"}); const j=await r.json();
+  if(!j.ok) throw new Error(j.error||"تعذّر فتح المنصة.");
+  S.csrf=j.data.csrf; S.settings=j.data.settings; S.user=j.data.user||null;
+}
+async function loadData(){
+  if(isStaff()){ S.data=await api("bootstrap"); }
+  else if(role()==="trainee"){ S.portal=await api("portal"); }
+}
+async function refresh(){ try{ await loadData(); }catch(e){ toast(e.message); } paint(); }
+
+/* ---------- boot ---------- */
+async function boot(){
+  try{ await loadSession(); }catch(e){ $("#app").innerHTML='<div class="panel empty"><h2>تعذّر فتح المنصة</h2><p>'+esc(e.message)+'</p></div>'; return; }
+  brand();
+  if(S.user && !S.user.must_change){ try{ await loadData(); }catch(e){ toast(e.message); } }
+  const h=location.hash.replace("#",""); if(h) S.view=h;
+  paint();
+  if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+  const net=()=>{ $("#net").hidden=navigator.onLine; }; addEventListener("online",()=>{ net(); if(S.user) refresh(); }); addEventListener("offline",net); net();
+  document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible" && !S.dirty && !$("#modal").innerHTML && S.user && !S.user.must_change && Date.now()-(boot._last||0)>60000){ boot._last=Date.now(); refresh(); } });
+}
+function brand(){
+  const st=S.settings, m=$("#brandMark");
+  if(st.logo){ m.classList.remove("txt"); m.innerHTML='<img src="'+esc(st.logo)+'" alt="شعار '+esc(st.org)+'">'; } else { m.classList.add("txt"); m.textContent="TVTC"; }
+  $("#brandSub").textContent=st.college+" – "+st.org;
+}
+function banner(title,sub){
+  const st=S.settings;
+  return '<div class="banner'+(st.banner?' img':'')+'"'+(st.banner?' style="background-image:linear-gradient(to top,rgba(6,42,36,.75),rgba(6,42,36,.1)),url('+esc(st.banner)+')"':'')+'><div><h1>'+esc(title)+'</h1>'+(sub?'<p>'+esc(sub)+'</p>':'')+'</div></div>';
+}
+
+/* ---------- paint ---------- */
+let painting=false;
+function keepFocus(fn){
+  const a=document.activeElement, id=a&&a.id, pos=a&&a.selectionStart;
+  fn();
+  if(id){ const n=document.getElementById(id); if(n && n!==document.activeElement){ n.focus(); try{ if(pos!=null) n.setSelectionRange(pos,pos); }catch(e){} } }
+}
+function tabsFor(){
+  const r=role();
+  if(r==="trainee") return [["home","الرئيسية"],["weekly","تقاريري الأسبوعية"],["account","حسابي"]];
+  const t=[["dash","لوحة المتابعة"],["trainees","المتدربون"],["visits","الزيارات"],["weekly","التقارير الأسبوعية"],["evals","تقييم الجهات"]];
+  if(r==="admin") t.push(["access","حسابات المتدربين"],["grads","الخريجون"],["staff","المشرفون"],["notices","الإعلانات"],["log","السجل"],["settings","الإعدادات"]);
+  else t.push(["account","حسابي"]);
+  return t;
+}
+function paint(){
+  if(painting) return; painting=true;
+  if(paint._view!==S.view){ S.dirty=false; paint._view=S.view; }
+  try{
+    if(!S.user){ $("#who").innerHTML=""; $("#tabs").hidden=true; $("#drawer").innerHTML=""; if($("#app").dataset.screen!=="login:"+S.loginTab+":"+S.tMode){ $("#app").innerHTML=viewLogin(); $("#app").dataset.screen="login:"+S.loginTab+":"+S.tMode; bindLogin(); } return; }
+    $("#app").dataset.screen="";
+    const r=role();
+    $("#who").innerHTML='<div style="text-align:end"><div>'+esc(S.user.name)+'</div><span class="role">'+(r==="admin"?"مسؤول التدريب التعاوني":r==="supervisor"?"مشرف الكلية":"متدرب")+' – <span class="num">'+esc(S.user.username)+'</span></span></div><button class="out" data-act="logout">خروج</button>';
+    if(S.user.must_change){ $("#tabs").hidden=true; $("#app").innerHTML=viewForcePw(); return; }
+    if((isStaff() && !S.data) || (r==="trainee" && !S.portal)){ $("#tabs").hidden=true; $("#app").innerHTML='<div class="empty">جارٍ تحميل البيانات…</div>'; return; }
+    const tabs=tabsFor();
+    if(!tabs.some(t=>t[0]===S.view)) S.view=tabs[0][0];
+    $("#tabs").hidden=false;
+    $("#tabsInner").innerHTML=tabs.map(t=>'<button data-nav="'+t[0]+'"'+(S.view===t[0]?' aria-current="page"':'')+'>'+t[1]+'</button>').join("");
+    const V={dash:viewDash,trainees:viewTrainees,visits:viewVisits,weekly:r==="trainee"?viewTWeekly:viewWeekly,evals:viewEvals,access:viewAccess,grads:viewGrads,staff:viewStaff,notices:viewNotices,log:viewLog,settings:viewSettings,home:viewHome,account:viewAccount};
+    keepFocus(()=>{ $("#app").innerHTML=(V[S.view]||viewDash)(); });
+    if(isStaff()) paintDrawer(); else $("#drawer").innerHTML="";
+  } finally { painting=false; }
+}
+
+/* ---------- login ---------- */
+function viewLogin(){
+  const st=S.settings, tr=S.loginTab==="trainee";
+  let form;
+  if(tr && S.tMode==="activate"){
+    form='<h2>تفعيل حساب المتدرب</h2><p class="muted" style="margin:0">أدخل رقمك التدريبي ورمز التفعيل الذي وصلك، ثم اختر كلمة مرور خاصة بك.</p>'+seg()+
+      '<form id="lform" novalidate autocomplete="off"><label class="lfield">الرقم التدريبي<input id="lacad" name="acad" inputmode="numeric" dir="ltr" required autocomplete="username"></label>'+
+      '<label class="lfield">رمز التفعيل<input id="lcode" name="code" dir="ltr" required placeholder="xxxx-xxxx" autocomplete="one-time-code"></label>'+
+      '<label class="lfield">كلمة المرور الجديدة<input id="lpw" name="pw" type="password" dir="ltr" required autocomplete="new-password"></label>'+
+      '<label class="lfield">تأكيد كلمة المرور<input id="lpw2" name="pw2" type="password" dir="ltr" required autocomplete="new-password"><span class="note" style="font-weight:400">8 خانات على الأقل، وتجمع بين حروف إنجليزية وأرقام.</span></label>'+
+      '<label class="showpw"><input type="checkbox" id="lshow"> إظهار كلمة المرور</label><div class="err" id="lerr" role="alert" style="min-height:1.4em;margin-bottom:6px"></div>'+
+      '<button class="btn primary lbtn" id="lbtn" type="submit">تفعيل الحساب والدخول</button></form>'+
+      '<p style="margin:14px 0 0;font-size:14px">لديك حساب مفعّل؟ <button class="linkbtn" data-tmode="login">سجّل الدخول</button></p>';
+  } else {
+    form='<h2>تسجيل الدخول</h2><p class="muted" style="margin:0">'+(tr?'ادخل برقمك التدريبي وكلمة المرور.':'ادخل برقمك الوظيفي وكلمة المرور.')+'</p>'+seg()+
+      '<form id="lform" novalidate autocomplete="on"><label class="lfield">'+(tr?'الرقم التدريبي':'الرقم الوظيفي')+'<input id="luser" name="username" inputmode="numeric" dir="ltr" required autocomplete="username"></label>'+
+      '<label class="lfield">كلمة المرور<input id="lpw" name="pw" type="password" dir="ltr" required autocomplete="current-password"></label>'+
+      '<label class="showpw"><input type="checkbox" id="lshow"> إظهار كلمة المرور</label><div class="err" id="lerr" role="alert" style="min-height:1.4em;margin-bottom:6px"></div>'+
+      '<button class="btn primary lbtn" id="lbtn" type="submit">دخول</button></form>'+
+      (tr?'<p style="margin:14px 0 0;font-size:14px">أول مرة تدخل؟ <button class="linkbtn" data-tmode="activate">فعّل حسابك برمز التفعيل</button></p>':'');
+  }
+  return '<div class="login"><div class="media"'+(st.banner?' style="background-image:url('+esc(st.banner)+')"':'')+'>'+(st.logo?'<span class="chip"><img src="'+esc(st.logo)+'" alt="شعار '+esc(st.org)+'"></span>':'')+'<h1>منصة التدريب التعاوني وشؤون الخريجين</h1><p>'+esc(st.college)+' – '+esc(st.semester)+'</p></div>'+
+    '<div class="side">'+form+'<div class="lfoot">'+(tr?'لم يصلك رمز التفعيل أو نسيت كلمة المرور؟ تواصل مع مسؤول التدريب التعاوني'+(st.contact?' <b>'+esc(st.contact)+'</b>':'')+'.':'نسيت كلمة المرور؟ يعيد مسؤول التدريب التعاوني تعيينها لك.')+'</div></div></div>';
+}
+function seg(){ const b=(k,l)=>'<button role="tab" type="button" data-ltab="'+k+'" aria-selected="'+(S.loginTab===k)+'">'+l+'</button>'; return '<div class="seg" role="tablist" aria-label="نوع المستخدم">'+b("trainee","المتدربون")+b("staff","منسوبو الكلية")+'</div>'; }
+function bindLogin(){
+  const form=$("#lform"); if(!form) return;
+  $("#lshow").onchange=e=>form.querySelectorAll("input[type=password],input[data-pw]").forEach(i=>{ i.dataset.pw=1; i.type=e.target.checked?"text":"password"; });
+  form.onsubmit=async ev=>{
+    ev.preventDefault(); const err=$("#lerr"), btn=$("#lbtn"), E=n=>form.elements[n]; err.textContent="";
+    const label=btn.textContent;
+    try{
+      btn.disabled=true; btn.textContent="جارٍ التحقق…";
+      let res;
+      if(S.loginTab==="trainee" && S.tMode==="activate"){
+        if(E("pw").value!==E("pw2").value) throw new Error("كلمتا المرور غير متطابقتين.");
+        res=await api("activate",{acad:E("acad").value,code:E("code").value,password:E("pw").value});
+      } else {
+        res=await api("login",{kind:S.loginTab==="trainee"?"trainee":"staff",username:E("username").value,password:E("pw").value});
+      }
+      S.user=res.user; S.csrf=res.csrf; S.view="";
+      if(!S.user.must_change) await loadData();
+      paint(); toast("مرحباً "+String(S.user.name).split(/\s+/)[0]);
+    }catch(e){ err.textContent=e.message; btn.disabled=false; btn.textContent=label; }
+  };
+}
+function viewForcePw(){
+  return '<div class="panel" style="max-width:520px;margin:30px auto"><h2>غيّر كلمة المرور المؤقتة</h2><p class="muted">دخلت بكلمة مرور مؤقتة. اختر كلمة مرور خاصة بك لتكمل.</p>'+pwForm()+'</div>';
+}
+function pwForm(){
+  return '<form class="form" id="pwform" style="grid-template-columns:1fr" novalidate><label>كلمة المرور الحالية<input name="current" type="password" dir="ltr" autocomplete="current-password"></label><label>كلمة المرور الجديدة<input name="new" type="password" dir="ltr" autocomplete="new-password"><span class="hint">8 خانات على الأقل، وتجمع بين حروف إنجليزية وأرقام.</span></label><label>تأكيد كلمة المرور<input name="new2" type="password" dir="ltr" autocomplete="new-password"></label><div class="err" id="pwerr" role="alert"></div><div class="actions" style="margin-top:0"><button class="btn primary" type="submit">حفظ كلمة المرور</button></div></form>';
+}
+async function submitPw(form){
+  const E=n=>form.elements[n], err=$("#pwerr"); err.textContent="";
+  if(E("new").value!==E("new2").value){ err.textContent="كلمتا المرور غير متطابقتين."; return; }
+  try{ const r=await api("password",{current:E("current").value,new:E("new").value}); S.user=r.user; toast("حُفظت كلمة المرور"); await loadData(); paint(); }
+  catch(e){ err.textContent=e.message; }
+}
+
+/* ---------- staff: dashboard ---------- */
+function viewDash(){
+  const ts=scopeT(), vs=scopeV(), cw=curWeek(), W=WEEKS(), st=S.settings;
+  const perWeek=Array(W+1).fill(0); vs.forEach(v=>{ const w=weekOf(v.visit_date); if(w>=1&&w<=W) perWeek[w]++; });
+  const max=Math.max(1,...perWeek);
+  const active=ts.filter(t=>t.reg_status!=="خريج" && t.reg_status!=="مطوي قيده");
+  const started=active.filter(t=>t.start_status==="مباشر").length;
+  const ids=new Set(ts.map(t=>Number(t.id)));
+  const wk=S.data.weekly.filter(w=>ids.has(Number(w.trainee_id)));
+  const pendingW=wk.filter(w=>w.status==="submitted").length;
+  const thisWeek=new Set(wk.filter(w=>Number(w.week)===cw).map(w=>Number(w.trainee_id)));
+  const evs=S.data.evals.filter(e=>ids.has(Number(e.trainee_id)));
+  const endS=iso(new Date(parseD(st.start).getTime()+(W*7-1)*864e5));
+  let h=banner(isAdmin()?'لوحة متابعة التدريب التعاوني':'مرحباً '+String(S.user.name).split(/\s+/)[0], st.college+' – '+st.semester);
+  h+='<section class="panel"><div class="hero"><div class="wk">'+(cw<1?'لم يبدأ الفصل التدريبي بعد':'الأسبوع التدريبي')+'<strong class="num">'+(cw<1?0:cw)+' / '+W+'</strong><span class="muted">'+esc(fmtH(st.start))+' – '+esc(fmtH(endS))+'</span></div><div><div class="ruler" style="grid-template-columns:repeat('+W+',1fr)" role="img" aria-label="عدد الزيارات في كل أسبوع">';
+  for(let w=1;w<=W;w++){ const c=perWeek[w]; h+='<div class="col'+(w<cw?' past':'')+(w===cw?' now':'')+'" title="الأسبوع '+w+': '+c+' زيارة">'+(c?'<span class="c num">'+c+'</span>':'')+'<div class="bar" style="height:'+Math.round(c/max*78)+'%"></div><div class="base"></div><span class="n num">'+w+'</span></div>'; }
+  h+='</div><div class="note" style="margin-top:6px">الأعمدة: عدد الزيارات المسجّلة في كل أسبوع'+(isAdmin()?'':' لمتدربيك')+'.</div></div></div>'+
+    '<div class="figs"><div><b class="num">'+ts.length+'</b><span>'+(isAdmin()?'متدرباً في التدريب التعاوني':'متدرباً مسنداً إليك')+'</span></div><div><b class="num">'+started+'</b><span>باشروا التدريب</span></div><div><b class="num">'+vs.length+'</b><span>زيارة مسجّلة</span></div><div><b class="num">'+thisWeek.size+' / '+active.length+'</b><span>سلّموا تقرير هذا الأسبوع</span></div><div><b class="num">'+evs.length+'</b><span>تقييماً من جهات التدريب</span></div></div></section>';
+  const cutoff=Math.max(1,cw-2);
+  const due=active.map(t=>({t,last:visitsOf(t.id)[0]})).filter(x=>!x.last || weekOf(x.last.visit_date)<cutoff);
+  h+='<div class="two" style="margin-top:18px"><section class="panel"><h3>يحتاجون زيارة <span class="muted" style="font-weight:400">('+due.length+')</span></h3><p class="note" style="margin-top:-6px">لم تُسجّل لهم زيارة خلال آخر ثلاثة أسابيع.</p>';
+  if(!ts.length) h+='<div class="empty">'+(isAdmin()?'لا يوجد متدربون بعد. ابدأ باستيراد الكشف من صفحة «المتدربون».':'لا يوجد متدربون مسندون إليك. راجع مسؤول التدريب التعاوني.')+'</div>';
+  else if(!due.length) h+='<div class="empty">جميع المتدربين زِيروا مؤخراً.</div>';
+  else h+='<table class="list"><tbody>'+due.slice(0,10).map(x=>'<tr class="click" data-open="'+x.t.id+'" tabindex="0"><td class="tname"><b>'+esc(x.t.name)+'</b><small>'+esc(x.t.entity||"جهة غير محددة")+'</small></td><td style="text-align:end">'+(x.last?'<span class="tag warn">آخر زيارة '+esc(fmtG(x.last.visit_date))+'</span>':'<span class="tag bad">لا توجد زيارة</span>')+'</td></tr>').join("")+'</tbody></table>'+(due.length>10?'<p class="note" style="margin-bottom:0">و'+(due.length-10)+' آخرون.</p>':'');
+  h+='</section><section class="panel"><h3>بانتظار المراجعة</h3>'+
+    '<div class="kpi-row"><button class="kpi" style="text-align:start;cursor:pointer" data-nav="weekly"><b class="num">'+pendingW+'</b><span>تقريراً أسبوعياً لم يُراجَع</span></button><button class="kpi" style="text-align:start;cursor:pointer" data-nav="trainees" data-f-st="_none"><b class="num">'+(active.length-started)+'</b><span>لم تُسجَّل مباشرتهم</span></button></div>';
+  if(isAdmin()){
+    const depts=uniq(S.data.trainees.map(t=>t.dept));
+    h+='<h3 style="margin-top:20px">حسب القسم</h3><div class="scroll"><table class="list"><thead><tr><th>القسم</th><th>متدربون</th><th>مباشر</th><th>زيارات</th></tr></thead><tbody>'+depts.map(d=>{ const t=S.data.trainees.filter(x=>x.dept===d), s=new Set(t.map(x=>Number(x.id))); return '<tr class="click" data-fdept="'+esc(d)+'"><td>'+esc(d)+'</td><td class="num">'+t.length+'</td><td class="num">'+t.filter(x=>x.start_status==="مباشر").length+'</td><td class="num">'+S.data.visits.filter(v=>s.has(Number(v.trainee_id))).length+'</td></tr>'; }).join("")+'</tbody></table></div>';
+    const noSup=S.data.trainees.filter(t=>!t.supervisor_id).length;
+    if(noSup) h+='<p class="note" style="margin-bottom:0"><span class="tag warn">'+noSup+' متدرباً بلا مشرف من الكلية</span> <button class="btn sm" data-nav="staff">التعيين</button></p>';
+  }
+  const nts=S.data.notices.filter(n=>n.audience!=="trainees").slice(0,3);
+  if(nts.length) h+='<h3 style="margin-top:20px">إعلانات</h3>'+nts.map(n=>'<div class="notice"><b>'+esc(n.title)+'</b><span class="note">'+esc(fmtT(n.created_at))+'</span>'+(n.body?'<p>'+esc(n.body)+'</p>':'')+'</div>').join("");
+  return h+'</section></div>';
+}
+
+/* ---------- staff: trainees ---------- */
+function stTag(t){
+  if(t.reg_status==="خريج") return '<span class="tag">خريج</span>';
+  if(t.reg_status==="مطوي قيده") return '<span class="tag bad">مطوي قيده</span>';
+  if(t.start_status==="مباشر") return '<span class="tag">مباشر</span>';
+  if(t.start_status==="غير مباشر") return '<span class="tag bad">غير مباشر</span>';
+  return '<span class="tag warn">لم تُحدَّد المباشرة</span>';
+}
+function miniRuler(id){
+  const ws=new Set(visitsOf(id).map(v=>weekOf(v.visit_date))), cw=curWeek(), W=WEEKS();
+  let h='<div class="mini" style="grid-template-columns:repeat('+W+',7px)" aria-hidden="true">';
+  for(let w=1;w<=W;w++) h+='<i class="'+(ws.has(w)?'v':w<cw?'p':'')+(w===cw?' now':'')+'"></i>';
+  return h+'</div>';
+}
+function filteredTrainees(){
+  const f=S.f, q=f.q.trim(), base=(role()==="supervisor"&&f.mine)?scopeT():S.data.trainees;
+  const list=base.filter(t=>(!q || [t.name,t.acad,t.entity,t.field_supervisor,t.phone].join(" ").includes(q))
+    && (!f.dept||t.dept===f.dept) && (!f.spec||t.specialty===f.spec) && (!f.entity||t.entity===f.entity) && (!f.sector||t.sector===f.sector)
+    && (!f.st || (f.st==="_none"?!t.start_status && t.reg_status!=="خريج":f.st==="خريج"?t.reg_status==="خريج":t.start_status===f.st))
+    && (!f.sup || (f.sup==="_none"?!t.supervisor_id:String(t.supervisor_id)===f.sup)));
+  return {base,list};
+}
+function viewTrainees(){
+  const f=S.f, {base,list}=filteredTrainees(), sups=S.data.staff.filter(s=>s.role==="supervisor");
+  const specs=uniq(S.data.trainees.filter(t=>!f.dept||t.dept===f.dept).map(t=>t.specialty));
+  let h='<div class="sec-title"><div><h2>المتدربون</h2><div class="muted">'+list.length+' من '+base.length+' متدرباً</div></div>'+
+    (isAdmin()?'<button class="btn" data-act="import">استيراد من Excel</button><a class="btn" href="api.php?a=export&kind=trainees">تصدير الكشف</a><button class="btn primary" data-act="addT">إضافة متدرب</button>':'')+'</div>'+
+    '<div class="toolbar"><input type="search" id="fq" placeholder="ابحث بالاسم أو الرقم التدريبي أو الجهة أو الجوال" value="'+esc(f.q)+'" aria-label="بحث">'+
+    '<select id="fdept" aria-label="القسم">'+opt(uniq(S.data.trainees.map(t=>t.dept)),f.dept,"كل الأقسام")+'</select>'+
+    '<select id="fspec" aria-label="التخصص">'+opt(specs,f.spec,"كل التخصصات")+'</select>'+
+    '<select id="fsector" aria-label="القطاع">'+opt(L("sectors"),f.sector,"كل القطاعات")+'</select>'+
+    '<select id="fent" aria-label="الجهة">'+opt(uniq(S.data.trainees.filter(t=>!f.sector||t.sector===f.sector).map(t=>t.entity)),f.entity,"كل الجهات")+'</select>'+
+    '<select id="fst" aria-label="الحالة"><option value="">كل الحالات</option>'+["مباشر","غير مباشر"].map(x=>'<option'+(f.st===x?' selected':'')+'>'+x+'</option>').join("")+'<option value="_none"'+(f.st==="_none"?' selected':'')+'>لم تُحدَّد المباشرة</option><option'+(f.st==="خريج"?' selected':'')+'>خريج</option></select>'+
+    (isAdmin()?'<select id="fsup" aria-label="مشرف الكلية"><option value="">كل المشرفين</option><option value="_none"'+(f.sup==="_none"?' selected':'')+'>بلا مشرف</option>'+sups.map(s=>'<option value="'+s.id+'"'+(f.sup===String(s.id)?' selected':'')+'>'+esc(s.name)+'</option>').join("")+'</select>'
+      :'<label class="chk"><input type="checkbox" id="fmine"'+(f.mine?' checked':'')+'> متدربيّ فقط</label>')+
+    (f.q||f.dept||f.spec||f.entity||f.sector||f.st||f.sup?'<button class="btn sm" data-act="clearF">مسح الفلاتر</button>':'')+'</div>';
+  if(!list.length) return h+'<div class="panel empty">'+(base.length?'لا توجد نتائج مطابقة. غيّر البحث أو الفلاتر.':(isAdmin()?'لا يوجد متدربون. استورد الكشف من ملف Excel أو أضف متدرباً.':'لم يُسنَد إليك متدربون بعد. ألغِ «متدربيّ فقط» لعرض الجميع.'))+'</div>';
+  const selN=Object.keys(S.sel).filter(k=>S.sel[k]).length;
+  if(isAdmin()) h+='<div class="toolbar" style="margin-top:-4px"><span class="note">'+(selN?'المحدَّد: '+selN:'حدّد متدربين لإجراء جماعي')+'</span>'+(selN?'<select id="bulkSup" aria-label="تعيين مشرف"><option value="">تعيين مشرف للمحدَّدين…</option><option value="_none">بلا مشرف</option>'+sups.map(s=>'<option value="'+s.id+'">'+esc(s.name)+'</option>').join("")+'</select><button class="btn sm" data-act="toGrad">نقل المحدَّدين إلى الخريجين</button><button class="btn sm" data-act="selNone">إلغاء التحديد</button>':'')+'</div>';
+  h+='<div class="panel" style="padding:6px 8px"><div class="scroll"><table class="list resp"><thead><tr>'+(isAdmin()?'<th><input type="checkbox" id="selAll" aria-label="تحديد الكل"></th>':'')+'<th>المتدرب</th><th>جهة التدريب</th><th>المشرف الميداني</th><th>مشرف الكلية</th><th>الحالة</th><th>الزيارات</th></tr></thead><tbody>';
+  h+=list.map(t=>'<tr class="click" data-open="'+t.id+'" tabindex="0">'+(isAdmin()?'<td class="hide-m"><input type="checkbox" data-sel="'+t.id+'"'+(S.sel[t.id]?' checked':'')+' aria-label="تحديد"></td>':'')+'<td class="tname"><b>'+esc(t.name)+'</b><small class="num">'+esc(t.acad)+'</small> <small>· '+esc(t.specialty||"")+'</small></td>'+
+    '<td class="span">'+(t.entity?esc(t.entity)+(t.sector?' <span class="tag">'+esc(t.sector)+'</span>':''):'<span class="muted">غير محددة</span>')+'</td>'+
+    '<td class="hide-m">'+(t.field_supervisor?esc(t.field_supervisor)+(t.field_supervisor_phone?'<br><small class="num muted">'+esc(t.field_supervisor_phone)+'</small>':''):'<span class="muted">—</span>')+'</td>'+
+    '<td class="hide-m">'+(t.supervisor_id?esc(staffName(t.supervisor_id)):'<span class="tag warn">غير معيّن</span>')+'</td>'+
+    '<td>'+stTag(t)+'</td><td style="white-space:nowrap">'+miniRuler(t.id)+' <small class="muted">'+visitsOf(t.id).length+'</small></td></tr>').join("");
+  return h+'</tbody></table></div></div>';
+}
+function paintDrawer(){
+  const box=$("#drawer"), t=S.openT && tById(S.openT);
+  if(!t){ box.innerHTML=""; return; }
+  const vs=visitsOf(t.id), wk=S.data.weekly.filter(w=>Number(w.trainee_id)===Number(t.id)).sort((a,b)=>b.week-a.week), ev=S.data.evals.filter(e=>Number(e.trainee_id)===Number(t.id));
+  const dd=(l,v,ltr)=>'<dt>'+l+'</dt><dd'+(ltr?' class="num" style="text-align:right"':'')+'>'+(v?esc(v):'<span class="muted">—</span>')+'</dd>';
+  const mine=isAdmin() || isMine(t);
+  let h='<div class="scrim" data-close="drawer"><aside class="drawer" role="dialog" aria-modal="true" aria-label="بيانات المتدرب"><div class="head"><div><h2>'+esc(t.name)+'</h2><div class="muted">'+esc(t.entity||"جهة التدريب غير محددة")+'</div><div style="margin-top:6px">'+stTag(t)+'</div></div><button class="x" data-close="drawer" aria-label="إغلاق">×</button></div>'+
+    '<dl class="kv">'+dd("الرقم التدريبي",t.acad,1)+dd("القسم",t.dept)+dd("التخصص",t.specialty)+dd("المعدل",t.gpa,1)+dd("جوال المتدرب",t.phone,1)+dd("قطاع الجهة",t.sector)+dd("اكتمال التسجيل",t.reg_status)+
+    '<dt>المشرف الميداني</dt><dd>'+(t.field_supervisor?esc(t.field_supervisor)+(t.field_supervisor_phone?' · <span class="num">'+esc(t.field_supervisor_phone)+'</span>':''):'<span class="muted">غير مسجّل</span>')+'</dd>'+
+    '<dt>مشرف الكلية</dt><dd>'+(t.supervisor_id?esc(staffName(t.supervisor_id)):'<span class="tag warn">غير معيّن</span>')+'</dd>'+
+    (isAdmin()?dd("رقم الهوية",t.nid,1)+dd("رقم الخطاب",t.letter_no)+'<dt>حساب المتدرب</dt><dd>'+accTag(t)+'</dd>':'')+(t.notes?dd("ملاحظات",t.notes):'')+'</dl>'+
+    '<div class="actions" style="margin:0 0 18px">'+(canVisit(t)?'<button class="btn primary" data-act="visit" data-id="'+t.id+'">تسجيل زيارة</button>':'')+
+    (mine?'<button class="btn" data-act="startSt" data-id="'+t.id+'">تحديث المباشرة</button><button class="btn" data-act="evalLink" data-id="'+t.id+'">رابط تقييم الجهة</button>':'')+
+    (isAdmin()?'<button class="btn" data-act="editT" data-id="'+t.id+'">تعديل البيانات</button>':'')+'</div>'+
+    '<h3>الزيارات <span class="muted" style="font-weight:400">('+vs.length+')</span></h3><div style="margin-bottom:12px">'+miniRuler(t.id)+'</div>'+
+    (vs.length?vs.map(v=>visitCard(v,false)).join(""):'<div class="empty" style="padding:18px">لا توجد زيارات مسجّلة لهذا المتدرب.</div>')+
+    '<h3 style="margin-top:20px">التقارير الأسبوعية <span class="muted" style="font-weight:400">('+wk.length+' من '+Math.max(0,curWeek())+')</span></h3>'+
+    (wk.length?'<div class="wk-grid">'+wk.map(w=>'<button data-act="openW" data-id="'+w.id+'" class="'+(w.status==="reviewed"?'done':w.status==="returned"?'ret':'')+'"><span class="num">'+w.week+'</span><small>'+(w.status==="reviewed"?'روجع':w.status==="returned"?'مُعاد':'جديد')+'</small></button>').join("")+'</div>':'<div class="empty" style="padding:14px">لم يسلّم تقارير بعد.</div>')+
+    '<h3 style="margin-top:20px">تقييم جهة التدريب</h3>'+(ev.length?ev.map(e=>'<div class="visit" style="display:flex;gap:12px;align-items:center"><div class="ring" style="--p:'+Number(e.total)+'"><span class="num">'+Math.round(e.total)+'%</span></div><div style="flex:1"><b>'+esc(e.evaluator_name)+'</b><div class="note">'+esc(fmtT(e.submitted_at))+(e.recommend?' · '+esc(e.recommend):'')+'</div></div><button class="btn sm" data-act="openEval" data-id="'+e.id+'">عرض</button></div>').join(""):'<div class="empty" style="padding:14px">لم تُرسل الجهة تقييمها بعد.'+(mine?' أرسل لها «رابط تقييم الجهة».':'')+'</div>')+
+    '</aside></div>';
+  box.innerHTML=h;
+}
+function visitCard(v,withT){
+  const t=tById(v.trainee_id)||{}, canDel=isAdmin() || Number(v.created_by)===Number(S.user.id);
+  const stc=v.attendance==="متغيب"?"bad":v.attendance==="منتظم"?"":"warn";
+  const rep=Number(v.has_file)?'<a class="btn sm" href="api.php?a=file&kind=visit&id='+v.id+'" target="_blank" rel="noopener">عرض التقرير</a>':v.report_url?'<a class="btn sm" href="'+esc(v.report_url)+'" target="_blank" rel="noopener">رابط التقرير</a>':'<span class="tag bad">بلا تقرير</span>';
+  return '<div class="visit"><div class="top">'+(withT?'<b data-open="'+v.trainee_id+'" style="cursor:pointer">'+esc(t.name||"")+'</b>':'<b>'+esc(v.type)+'</b>')+'<span class="muted">'+esc(fmtH(v.visit_date))+' <span class="num">('+esc(fmtG(v.visit_date))+')</span></span><span class="tag">الأسبوع '+weekOf(v.visit_date)+'</span>'+
+    '<span style="margin-inline-start:auto;display:flex;gap:6px">'+rep+(canDel?'<button class="btn sm danger" data-act="delV" data-id="'+v.id+'">حذف</button>':'')+'</span></div>'+
+    (withT?'<div class="note">'+esc(t.entity||"")+' · '+esc(v.type)+'</div>':'')+
+    '<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">'+(v.attendance?'<span class="tag '+stc+'">الانتظام: '+esc(v.attendance)+'</span>':'')+(v.rating?'<span class="tag">الأداء: '+esc(v.rating)+'</span>':'')+(Number(v.met_field)?'<span class="tag">قابل المشرف الميداني</span>':'')+'<span class="note">بواسطة '+esc(staffName(v.created_by)||"—")+'</span></div>'+
+    (v.notes?'<p>'+esc(v.notes)+'</p>':'')+'</div>';
+}
+function accTag(t){
+  if(!t.user_id) return '<span class="tag warn">غير مفعّل</span>';
+  if(!Number(t.account_active)) return '<span class="tag bad">موقوف</span>';
+  if(Number(t.activated)) return '<span class="tag">مفعّل</span>'+(t.trainee_last_login?' <span class="note">آخر دخول '+esc(fmtT(t.trainee_last_login))+'</span>':'');
+  return '<span class="tag warn">بانتظار التفعيل</span>';
+}
+
+/* ---------- staff: visits ---------- */
+function viewVisits(){
+  const f=S.vf, q=f.q.trim();
+  const vs=scopeV().filter(v=>{ const t=tById(v.trainee_id)||{}; return (!q || [t.name,t.entity,t.acad,v.notes].join(" ").includes(q)) && (!f.sup||String(v.created_by)===f.sup); });
+  let h='<div class="sec-title"><div><h2>'+(isAdmin()?'سجل الزيارات الميدانية':'زيارات متدربيّ')+'</h2><div class="muted">'+vs.length+' زيارة، منها '+vs.filter(v=>Number(v.has_file)||v.report_url).length+' بتقرير مرفق</div></div>'+(isAdmin()&&S.data.visits.length?'<a class="btn" href="api.php?a=export&kind=visits">تصدير السجل (CSV)</a>':'')+'</div>'+
+    '<div class="toolbar"><input type="search" id="vq" placeholder="ابحث باسم المتدرب أو الجهة أو الملاحظات" value="'+esc(f.q)+'" aria-label="بحث">'+
+    (isAdmin()?'<select id="vsup" aria-label="المشرف"><option value="">كل المشرفين</option>'+S.data.staff.map(s=>'<option value="'+s.id+'"'+(f.sup===String(s.id)?' selected':'')+'>'+esc(s.name)+'</option>').join("")+'</select>':'')+'</div>';
+  if(!vs.length) return h+'<div class="panel empty">'+(q||f.sup?'لا توجد زيارات مطابقة.':'لا توجد زيارات بعد. افتح متدرباً من صفحة المتدربين واختر «تسجيل زيارة».')+'</div>';
+  return h+vs.map(v=>visitCard(v,true)).join("");
+}
+function visitForm(id){
+  const t=tById(id); if(!t) return;
+  const n=visitsOf(id).length+1, req=!!S.settings.requireReport;
+  openModal('<div class="head"><div><h2>تسجيل زيارة رقم '+n+'</h2><div class="muted">'+esc(t.name)+' · '+esc(t.entity||"")+'</div></div><button class="x" data-close="modal" aria-label="إغلاق">×</button></div>'+
+    '<form class="form" id="vform" novalidate><input type="hidden" name="trainee_id" value="'+t.id+'">'+
+    '<label>تاريخ الزيارة<input type="date" name="visit_date" required max="'+today()+'" value="'+today()+'"><span class="hint" id="dhint"></span></label>'+
+    '<label>نوع الزيارة<select name="type">'+opt(L("visitTypes"),"")+'</select></label>'+
+    '<label>انتظام المتدرب<select name="attendance">'+opt(L("attend"),"منتظم")+'</select></label>'+
+    '<label>تقييم الأداء<select name="rating">'+opt(L("rating"),"جيد جداً")+'</select></label>'+
+    '<label class="chk full" style="flex-direction:row"><input type="checkbox" name="met_field" value="1" checked> تم لقاء المشرف الميداني'+(t.field_supervisor?' ('+esc(t.field_supervisor)+')':'')+'</label>'+
+    '<label class="full">ملاحظات الزيارة<textarea name="notes" placeholder="ما لاحظته على المتدرب، والمهام التي يؤديها، وأي توصيات"></textarea></label>'+
+    '<div class="full"><div style="font-size:14px;font-weight:500;margin-bottom:5px">تقرير الزيارة</div><label class="drop" id="drop"><input type="file" name="file" accept=".pdf,image/*" style="display:none"><span id="fname">اختر ملف التقرير (PDF أو صورة، حتى '+S.settings.maxUpload+' ميجابايت)</span></label></div>'+
+    '<label class="full">أو رابط التقرير<input type="url" name="report_url" placeholder="https://" dir="ltr"><span class="hint">إن كان التقرير محفوظاً في OneDrive أو Google Drive.</span></label>'+
+    '<div class="full err" id="verr" role="alert"></div><div class="full actions" style="margin-top:0"><button class="btn primary" type="submit" id="vsave">حفظ الزيارة</button><button class="btn" type="button" data-close="modal">إلغاء</button></div></form>');
+  const form=$("#vform");
+  const dh=()=>{ const v=form.elements.visit_date.value, w=weekOf(v); $("#dhint").textContent=v?fmtH(v)+" · "+(w>=1&&w<=WEEKS()?"الأسبوع "+w:"خارج أسابيع الفصل"):""; };
+  form.elements.visit_date.oninput=dh; dh();
+  form.elements.file.onchange=()=>{ const f=form.elements.file.files[0]; $("#fname").textContent=f?f.name+" ("+(f.size/1048576).toFixed(1)+" م.ب)":"اختر ملف التقرير"; $("#drop").classList.toggle("has",!!f); };
+  form.onsubmit=async ev=>{
+    ev.preventDefault(); const err=$("#verr"), btn=$("#vsave"); err.textContent="";
+    const f=form.elements.file.files[0];
+    if(req && !f && !form.elements.report_url.value.trim()){ err.textContent="أرفق تقرير الزيارة أو ضع رابطه."; return; }
+    if(f && f.size>S.settings.maxUpload*1048576){ err.textContent="حجم الملف أكبر من "+S.settings.maxUpload+" ميجابايت."; return; }
+    btn.disabled=true; btn.textContent=f?"جارٍ رفع التقرير…":"جارٍ الحفظ…";
+    try{ const fd=new FormData(form); if(!form.elements.met_field.checked) fd.set("met_field","0"); await api("visit.save",fd,true); closeModal(); toast("حُفظت الزيارة"); refresh(); }
+    catch(e){ err.textContent=e.message; btn.disabled=false; btn.textContent="حفظ الزيارة"; }
+  };
+}
+
+/* ---------- staff: weekly ---------- */
+function viewWeekly(){
+  if(!S.weekly){ loadWeekly(); return '<div class="empty">جارٍ تحميل التقارير…</div>'; }
+  const f=S.wf, q=f.q.trim();
+  const list=S.weekly.filter(w=>(!f.status||w.status===f.status) && (!q || [w.trainee_name,w.entity,w.tasks].join(" ").includes(q)));
+  const cnt=k=>S.weekly.filter(w=>w.status===k).length;
+  let h='<div class="sec-title"><div><h2>التقارير الأسبوعية</h2><div class="muted">يكتب المتدرب ما أنجزه كل أسبوع، ويراجعه مشرف الكلية.</div></div><button class="btn" data-act="reloadW">تحديث</button></div>'+
+    '<div class="toolbar"><input type="search" id="wq" placeholder="ابحث باسم المتدرب أو الجهة أو المحتوى" value="'+esc(f.q)+'" aria-label="بحث"><select id="wst" aria-label="الحالة"><option value="">كل التقارير ('+S.weekly.length+')</option><option value="submitted"'+(f.status==="submitted"?' selected':'')+'>بانتظار المراجعة ('+cnt("submitted")+')</option><option value="reviewed"'+(f.status==="reviewed"?' selected':'')+'>روجعت ('+cnt("reviewed")+')</option><option value="returned"'+(f.status==="returned"?' selected':'')+'>أُعيدت للمتدرب ('+cnt("returned")+')</option></select></div>';
+  const ts=scopeT().filter(t=>t.reg_status!=="خريج"&&t.reg_status!=="مطوي قيده"), cw=curWeek();
+  if(cw>=1 && ts.length){ const got=new Set(S.data.weekly.filter(w=>Number(w.week)===cw).map(w=>Number(w.trainee_id))); const miss=ts.filter(t=>!got.has(Number(t.id)));
+    h+='<div class="callout'+(miss.length?'':' ok')+'" style="margin-bottom:14px">الأسبوع '+cw+': سلّم '+(ts.length-miss.length)+' من '+ts.length+' متدرباً.'+(miss.length&&miss.length<=15?' لم يسلّم: '+miss.map(t=>esc(t.name.split(/\s+/).slice(0,2).join(" "))).join("، ")+'.':'')+'</div>'; }
+  if(!list.length) return h+'<div class="panel empty">لا توجد تقارير مطابقة.</div>';
+  return h+list.map(w=>'<div class="visit"><div class="top"><b data-open="'+w.trainee_id+'" style="cursor:pointer">'+esc(w.trainee_name)+'</b><span class="tag">الأسبوع '+w.week+'</span>'+wTag(w.status)+'<span class="muted">'+esc(fmtT(w.submitted_at))+'</span><span style="margin-inline-start:auto"><button class="btn sm primary" data-act="openW" data-id="'+w.id+'">'+(w.status==="submitted"?'مراجعة':'عرض')+'</button></span></div><div class="note">'+esc(w.entity||"")+(w.hours?' · '+esc(w.hours)+' ساعة':'')+'</div><p>'+esc(String(w.tasks).slice(0,220))+(String(w.tasks).length>220?'…':'')+'</p></div>').join("");
+}
+const wTag = s => s==="reviewed"?'<span class="tag">روجع</span>':s==="returned"?'<span class="tag bad">أُعيد للتعديل</span>':'<span class="tag warn">بانتظار المراجعة</span>';
+async function loadWeekly(){ try{ S.weekly=await api("weekly.list",{}); }catch(e){ S.weekly=[]; toast(e.message); } paint(); }
+async function openWeekly(id){
+  let w=(S.weekly||[]).find(x=>Number(x.id)===Number(id));
+  if(!w){ try{ const all=await api("weekly.list",{}); S.weekly=all; w=all.find(x=>Number(x.id)===Number(id)); }catch(e){ toast(e.message); return; } }
+  if(!w){ toast("لا تملك صلاحية عرض هذا التقرير."); return; }
+  const t=tById(w.trainee_id)||{}, can=isAdmin()||isMine(t);
+  openModal('<div class="head"><div><h2>تقرير الأسبوع '+w.week+'</h2><div class="muted">'+esc(w.trainee_name)+' · '+esc(w.entity||"")+'</div><div style="margin-top:6px">'+wTag(w.status)+'</div></div><button class="x" data-close="modal" aria-label="إغلاق">×</button></div>'+
+    '<h3>المهام المنجزة</h3><p style="white-space:pre-wrap;margin-top:0">'+esc(w.tasks)+'</p>'+(w.skills?'<h3>المهارات المكتسبة</h3><p style="white-space:pre-wrap;margin-top:0">'+esc(w.skills)+'</p>':'')+(w.challenges?'<h3>الصعوبات</h3><p style="white-space:pre-wrap;margin-top:0">'+esc(w.challenges)+'</p>':'')+
+    '<p class="note">'+(w.hours?'عدد الساعات: '+esc(w.hours)+' · ':'')+'سُلّم '+esc(fmtT(w.submitted_at))+(Number(w.has_file)?' · <a href="api.php?a=file&kind=weekly&id='+w.id+'" target="_blank" rel="noopener">فتح المرفق</a>':'')+'</p>'+
+    (can?'<form class="form" id="wform" style="grid-template-columns:1fr" novalidate><label>ملاحظة المشرف<textarea name="comment" placeholder="ملاحظتك للمتدرب (مطلوبة عند الإعادة)">'+esc(w.sup_comment||"")+'</textarea></label><div class="err" id="werr" role="alert"></div><div class="actions" style="margin-top:0"><button class="btn primary" type="button" data-act="reviewW" data-id="'+w.id+'" data-st="reviewed">اعتماد التقرير</button><button class="btn danger" type="button" data-act="reviewW" data-id="'+w.id+'" data-st="returned">إعادته للتعديل</button></div></form>':(w.sup_comment?'<div class="callout ok">'+esc(w.sup_comment)+'</div>':'')));
+}
+
+/* ---------- staff: field evaluations ---------- */
+function viewEvals(){
+  const ids=new Set(scopeT().map(t=>Number(t.id))), evs=S.data.evals.filter(e=>isAdmin()||ids.has(Number(e.trainee_id)));
+  const ts=scopeT(), withEval=new Set(evs.map(e=>Number(e.trainee_id))), missing=ts.filter(t=>!withEval.has(Number(t.id)) && t.reg_status!=="مطوي قيده");
+  const avg=evs.length?Math.round(evs.reduce((n,e)=>n+Number(e.total),0)/evs.length):0;
+  let h='<div class="sec-title"><div><h2>تقييم جهات التدريب</h2><div class="muted">يعبّئ المشرف الميداني نموذج التقييم برابط خاص بكل متدرب، دون حساب في المنصة.</div></div>'+(isAdmin()&&evs.length?'<a class="btn" href="api.php?a=export&kind=evals">تصدير التقييمات (CSV)</a>':'')+'</div>'+
+    '<div class="kpi-row" style="margin:14px 0"><div class="kpi"><b class="num">'+evs.length+'</b><span>تقييماً مستلماً</span></div><div class="kpi"><b class="num">'+missing.length+'</b><span>متدرباً بلا تقييم</span></div><div class="kpi"><b class="num">'+(evs.length?avg+'%':'—')+'</b><span>متوسط التقييم</span></div></div>';
+  h+='<div class="split"><section class="panel"><h3>التقييمات المستلمة</h3>'+(evs.length?evs.map(e=>{ const t=tById(e.trainee_id)||{}; return '<div class="visit" style="display:flex;gap:12px;align-items:center"><div class="ring" style="--p:'+Number(e.total)+'"><span class="num">'+Math.round(e.total)+'%</span></div><div style="flex:1;min-width:0"><b data-open="'+e.trainee_id+'" style="cursor:pointer">'+esc(t.name||"")+'</b><div class="note">'+esc(t.entity||"")+' · '+esc(e.evaluator_name)+'</div></div><button class="btn sm" data-act="openEval" data-id="'+e.id+'">عرض</button></div>'; }).join(""):'<div class="empty">لم تصل تقييمات بعد.</div>')+'</section>'+
+    '<section class="panel"><h3>بانتظار تقييم الجهة <span class="muted" style="font-weight:400">('+missing.length+')</span></h3><p class="note" style="margin-top:-6px">أرسل الرابط للمشرف الميداني عبر واتساب أو انسخه.</p>'+
+    (missing.length?'<table class="list"><tbody>'+missing.slice(0,60).map(t=>'<tr><td class="tname"><b>'+esc(t.name)+'</b><small>'+esc(t.entity||"جهة غير محددة")+(t.field_supervisor?' · '+esc(t.field_supervisor):'')+'</small></td><td style="text-align:end;white-space:nowrap">'+(isAdmin()||isMine(t)?'<button class="btn sm" data-act="evalLink" data-id="'+t.id+'">إرسال الرابط</button>':'')+'</td></tr>').join("")+'</tbody></table>':'<div class="empty">جميع المتدربين قُيّموا.</div>')+'</section></div>';
+  return h;
+}
+async function evalLink(id){
+  const t=tById(id); if(!t) return;
+  try{
+    const r=await api("eval.link",{trainee_id:id});
+    const msg="السلام عليكم "+(t.field_supervisor||"")+"\nنشكر لكم تدريب المتدرب "+t.name+" من "+S.settings.college+".\nنأمل تعبئة نموذج تقييمه (دقيقتان، دون تسجيل):\n"+r.url;
+    const wa=waLink(t.field_supervisor_phone,msg);
+    openModal('<div class="head"><div><h2>رابط تقييم جهة التدريب</h2><div class="muted">'+esc(t.name)+' · '+esc(t.entity||"")+'</div></div><button class="x" data-close="modal" aria-label="إغلاق">×</button></div>'+
+      '<p>أرسل هذا الرابط للمشرف الميداني'+(t.field_supervisor?' <b>'+esc(t.field_supervisor)+'</b>':'')+'. يُقبل تقييم واحد لكل متدرب.</p>'+
+      '<input readonly dir="ltr" value="'+esc(r.url)+'" style="width:100%;border:1px solid var(--line);background:var(--paper);border-radius:7px;padding:8px 10px" onclick="this.select()">'+
+      '<div class="actions">'+(wa?'<a class="btn primary" href="'+esc(wa)+'" target="_blank" rel="noopener">إرسال عبر واتساب</a>':'<span class="note">أضف جوال المشرف الميداني في بيانات المتدرب لتفعيل الإرسال عبر واتساب.</span>')+'<button class="btn" data-act="copy" data-text="'+esc(msg)+'">نسخ الرسالة</button><button class="btn" data-act="copy" data-text="'+esc(r.url)+'">نسخ الرابط فقط</button><button class="btn sm danger" data-act="renewEval" data-id="'+id+'">استبدال الرابط</button></div>');
+  }catch(e){ toast(e.message); }
+}
+async function openEval(id){
+  try{
+    const e=await api("eval.get",{id}), c=L("criteria");
+    openModal('<div class="head"><div><h2>تقييم جهة التدريب</h2><div class="muted">'+esc(e.trainee_name)+'</div></div><button class="x" data-close="modal" aria-label="إغلاق">×</button></div>'+
+      '<div style="display:flex;gap:14px;align-items:center;margin-bottom:12px"><div class="ring" style="--p:'+Number(e.total)+';width:78px;height:78px"><span class="num" style="width:62px;height:62px">'+Math.round(e.total)+'%</span></div><div><b>'+esc(e.evaluator_name)+'</b>'+(e.evaluator_title?'<div class="note">'+esc(e.evaluator_title)+'</div>':'')+(e.evaluator_phone?'<div class="note num">'+esc(e.evaluator_phone)+'</div>':'')+'<div class="note">'+esc(fmtT(e.submitted_at))+'</div></div></div>'+
+      '<table class="list"><tbody>'+c.map((x,i)=>'<tr><td>'+esc(x)+'</td><td style="width:40%"><div class="bar-h"><i style="width:'+((e.scores[i]||0)*20)+'%"></i></div></td><td class="num" style="text-align:end">'+(e.scores[i]||"—")+' / 5</td></tr>').join("")+'</tbody></table>'+
+      (e.recommend?'<p><b>التوصية:</b> '+esc(e.recommend)+'</p>':'')+(e.comments?'<p style="white-space:pre-wrap">'+esc(e.comments)+'</p>':'')+
+      (isAdmin()?'<div class="actions"><button class="btn sm danger" data-act="delEval" data-id="'+e.id+'">حذف التقييم (يسمح بتقييم جديد)</button></div>':''));
+  }catch(x){ toast(x.message); }
+}
+
+/* ---------- admin: trainee accounts ---------- */
+function viewAccess(){
+  const all=S.data.trainees, f=S.f, q=f.q.trim();
+  const on=all.filter(t=>t.user_id), act=on.filter(t=>Number(t.activated)), off=all.filter(t=>!t.user_id);
+  const list=all.filter(t=>(!q || [t.name,t.acad,t.phone].join(" ").includes(q)) && (!f.acc || (f.acc==="off"?!t.user_id:f.acc==="wait"?(t.user_id&&!Number(t.activated)):f.acc==="on"?Number(t.activated):false)));
+  const msg=t=>"المتدرب "+t.name+"\nللدخول إلى منصة التدريب التعاوني – "+S.settings.college+":\nافتح الرابط: "+location.origin+location.pathname.replace(/[^/]*$/,"")+"\nاختر «فعّل حسابك برمز التفعيل».\nالرقم التدريبي: "+t.acad+"\nرمز التفعيل: "+fmtCode(t.activation_code)+"\nلا تشارك الرمز مع أحد.";
+  let h='<div class="sec-title"><div><h2>حسابات المتدربين</h2><p class="muted" style="margin:0">يُولَّد لكل متدرب رمز تفعيل يُستخدم مرة واحدة، ثم يختار كلمة مرور خاصة به.</p></div>'+
+    (off.length?'<button class="btn primary" data-act="issueAll">توليد رموز لـ '+off.length+' متدرباً</button>':'')+(on.length?'<a class="btn" href="api.php?a=export&kind=codes">تصدير الرموز (CSV)</a>':'')+'</div>'+
+    '<div class="kpi-row" style="margin:14px 0"><div class="kpi"><b class="num">'+act.length+'</b><span>فعّلوا حساباتهم</span></div><div class="kpi"><b class="num">'+(on.length-act.length)+'</b><span>بانتظار التفعيل</span></div><div class="kpi"><b class="num">'+off.length+'</b><span>بلا رمز بعد</span></div></div>'+
+    '<div class="toolbar"><input type="search" id="fq" placeholder="ابحث بالاسم أو الرقم التدريبي أو الجوال" value="'+esc(f.q)+'" aria-label="بحث"><select id="facc" aria-label="حالة الحساب"><option value="">كل المتدربين</option><option value="on"'+(f.acc==="on"?' selected':'')+'>مفعّل</option><option value="wait"'+(f.acc==="wait"?' selected':'')+'>بانتظار التفعيل</option><option value="off"'+(f.acc==="off"?' selected':'')+'>بلا رمز</option></select></div>';
+  h+='<section class="panel" style="padding:6px 8px"><div class="scroll"><table class="list"><thead><tr><th>المتدرب</th><th>الجوال</th><th>الحساب</th><th>رمز التفعيل</th><th></th></tr></thead><tbody>'+
+    (list.length?list.map(t=>{ const code=t.activation_code, wa=code?waLink(t.phone,msg(t)):"";
+      return '<tr><td class="tname"><b>'+esc(t.name)+'</b><small class="num">'+esc(t.acad)+'</small></td><td class="num">'+esc(t.phone||"—")+'</td><td>'+accTag(t)+'</td><td>'+(code?'<span class="code">'+esc(fmtCode(code))+'</span>':'<span class="muted">—</span>')+'</td><td style="text-align:end;white-space:nowrap">'+
+        (!t.user_id?'<button class="btn sm" data-act="issue" data-id="'+t.id+'">توليد رمز</button>':
+          (code?(wa?'<a class="btn sm" href="'+esc(wa)+'" target="_blank" rel="noopener">واتساب</a> ':'')+'<button class="btn sm" data-act="copy" data-text="'+esc(msg(t))+'">نسخ الرسالة</button> ':'')+
+          '<button class="btn sm" data-act="reissue" data-id="'+t.id+'">'+(Number(t.activated)?'إعادة تعيين':'رمز جديد')+'</button> <button class="btn sm'+(Number(t.account_active)?' danger':'')+'" data-act="accToggle" data-id="'+t.id+'">'+(Number(t.account_active)?'إيقاف':'تفعيل')+'</button>')+'</td></tr>'; }).join(""):'<tr><td colspan="5" class="empty">لا توجد نتائج.</td></tr>')+'</tbody></table></div></section>';
+  return h;
+}
+
+/* ---------- admin: graduates ---------- */
+function viewGrads(){
+  if(!S.grads){ api("grad.list").then(g=>{ S.grads=g; paint(); }).catch(e=>{ S.grads=[]; toast(e.message); paint(); }); return '<div class="empty">جارٍ تحميل الخريجين…</div>'; }
+  const f=S.gf, q=f.q.trim(), g=S.grads;
+  const list=g.filter(x=>(!q||[x.name,x.acad,x.employer,x.phone].join(" ").includes(q)) && (!f.st||x.status===f.st) && (!f.term||x.grad_term===f.term));
+  const by=k=>g.filter(x=>x.status===k).length, emp=by("يعمل"), known=g.length-by("غير معروف");
+  let h='<div class="sec-title"><div><h2>شؤون الخريجين</h2><div class="muted">متابعة الخريجين بعد التخرج: التوظيف وجهات العمل والتواصل.</div></div><button class="btn" data-act="importG">استيراد من Excel</button>'+(g.length?'<a class="btn" href="api.php?a=export&kind=graduates">تصدير (CSV)</a>':'')+'<button class="btn primary" data-act="addG">إضافة خريج</button></div>'+
+    '<div class="kpi-row" style="margin:14px 0"><div class="kpi"><b class="num">'+g.length+'</b><span>خريجاً مسجّلاً</span></div><div class="kpi"><b class="num">'+emp+'</b><span>يعملون</span></div><div class="kpi"><b class="num">'+by("يبحث عن عمل")+'</b><span>يبحثون عن عمل</span></div><div class="kpi"><b class="num">'+(known?Math.round(emp/known*100)+'%':'—')+'</b><span>نسبة التوظيف (من المعروفة حالتهم)</span></div></div>';
+  const terms=uniq(g.map(x=>x.grad_term));
+  h+='<div class="toolbar"><input type="search" id="gq" placeholder="ابحث بالاسم أو الرقم التدريبي أو جهة العمل" value="'+esc(f.q)+'" aria-label="بحث"><select id="gst" aria-label="الحالة">'+opt(L("grad"),f.st,"كل الحالات")+'</select><select id="gterm" aria-label="فصل التخرج">'+opt(terms,f.term,"كل الفصول")+'</select></div>';
+  if(!list.length) return h+'<div class="panel empty">'+(g.length?'لا توجد نتائج مطابقة.':'لا يوجد خريجون بعد. أضفهم يدوياً، أو استوردهم من Excel، أو انقل المتدربين من صفحة «المتدربون» بتحديدهم ثم «نقل إلى الخريجين».')+'</div>';
+  const cls={"يعمل":"","يبحث عن عمل":"warn","يكمل دراسته":"","غير معروف":"bad"};
+  return h+'<section class="panel" style="padding:6px 8px"><div class="scroll"><table class="list resp"><thead><tr><th>الخريج</th><th>التخصص</th><th>فصل التخرج</th><th>الحالة</th><th>جهة العمل</th><th>آخر تواصل</th></tr></thead><tbody>'+
+    list.map(x=>'<tr class="click" data-act="editG" data-id="'+x.id+'" tabindex="0"><td class="tname"><b>'+esc(x.name)+'</b><small class="num">'+esc(x.acad||"")+(x.phone?' · '+esc(x.phone):'')+'</small></td><td class="hide-m">'+esc(x.specialty||x.dept||"")+'</td><td class="hide-m">'+esc(x.grad_term||"")+'</td><td><span class="tag '+cls[x.status]+'">'+esc(x.status)+'</span></td><td class="span">'+esc(x.employer||"")+(x.job_title?' <small class="muted">· '+esc(x.job_title)+'</small>':'')+'</td><td class="hide-m">'+(x.last_contact?esc(fmtG(x.last_contact)):'<span class="muted">—</span>')+'</td></tr>').join("")+'</tbody></table></div></section>';
+}
+function gradForm(id){
+  const x=id?S.grads.find(g=>Number(g.id)===Number(id)):{status:"غير معروف"};
+  const F=(n,l,v,ex,full)=>'<label'+(full?' class="full"':'')+'>'+l+'<input name="'+n+'" value="'+esc(v||"")+'" '+(ex||"")+'></label>';
+  openModal('<div class="head"><div><h2>'+(id?'بيانات الخريج':'إضافة خريج')+'</h2></div><button class="x" data-close="modal" aria-label="إغلاق">×</button></div><form class="form" id="gform" novalidate><input type="hidden" name="id" value="'+(id||"")+'">'+
+    F("name","الاسم",x.name,"required",1)+F("acad","الرقم التدريبي",x.acad,'inputmode="numeric" dir="ltr"')+F("phone","الجوال",x.phone,'inputmode="tel" dir="ltr"')+F("email","البريد الإلكتروني",x.email,'type="email" dir="ltr"')+F("grad_term","فصل التخرج",x.grad_term,'placeholder="مثال: الفصل الأول 1448هـ"')+
+    F("dept","القسم",x.dept)+F("specialty","التخصص",x.specialty)+F("gpa","المعدل",x.gpa,'dir="ltr"')+
+    '<label>حالة التوظيف<select name="status">'+opt(L("grad"),x.status)+'</select></label>'+F("employer","جهة العمل",x.employer)+F("job_title","المسمى الوظيفي",x.job_title)+
+    '<label>قطاع العمل<select name="sector">'+opt(L("sectors"),x.sector||"","غير محدد")+'</select></label>'+F("employed_on","تاريخ التوظيف",x.employed_on,'type="date"')+F("last_contact","آخر تواصل",x.last_contact,'type="date"')+
+    '<label class="full">ملاحظات<textarea name="notes">'+esc(x.notes||"")+'</textarea></label><div class="full err" id="gerr" role="alert"></div>'+
+    '<div class="full actions" style="margin-top:0"><button class="btn primary" type="submit">حفظ</button><button class="btn" type="button" data-close="modal">إلغاء</button>'+(id?'<button class="btn danger" type="button" data-act="delG" data-id="'+id+'" style="margin-inline-start:auto">حذف</button>':'')+'</div></form>');
+  $("#gform").onsubmit=async ev=>{ ev.preventDefault(); try{ await api("grad.save",Object.fromEntries(new FormData(ev.target))); closeModal(); toast("حُفظت بيانات الخريج"); S.grads=await api("grad.list"); paint(); }catch(e){ $("#gerr").textContent=e.message; } };
+}
+
+/* ---------- admin: staff ---------- */
+function viewStaff(){
+  const staff=S.data.staff, ents=uniq(S.data.trainees.map(t=>t.entity)), sups=staff.filter(s=>s.role==="supervisor");
+  let h='<div class="sec-title"><div><h2>المشرفون والتعيين</h2><p class="muted" style="margin:0">أضف مشرفي الكلية بأرقامهم الوظيفية. يدخل كل مشرف بكلمة مرور مؤقتة ثم يغيّرها.</p></div><button class="btn primary" data-act="addS">إضافة مشرف</button></div>'+
+    '<section class="panel" style="margin-top:16px;padding:6px 8px"><div class="scroll"><table class="list"><thead><tr><th>الاسم</th><th>الرقم الوظيفي</th><th>الجوال</th><th>متدربون</th><th>آخر دخول</th><th></th></tr></thead><tbody>'+
+    staff.map(s=>'<tr><td><b>'+esc(s.name)+'</b> '+(s.role==="admin"?'<span class="tag">المسؤول</span>':'')+(!Number(s.active)?' <span class="tag bad">موقوف</span>':'')+(Number(s.must_change)?' <span class="tag warn">لم يغيّر المؤقتة</span>':'')+'</td><td class="num">'+esc(s.username)+'</td><td class="num">'+esc(s.phone||"—")+'</td><td class="num">'+(s.role==="admin"?"—":S.data.trainees.filter(t=>Number(t.supervisor_id)===Number(s.id)).length)+'</td><td>'+(s.last_login?esc(fmtT(s.last_login)):'<span class="muted">لم يدخل</span>')+'</td>'+
+      '<td style="text-align:end;white-space:nowrap"><button class="btn sm" data-act="editS" data-id="'+s.id+'">تعديل</button>'+(s.role!=="admin"?' <button class="btn sm" data-act="resetS" data-id="'+s.id+'">كلمة مرور مؤقتة</button> <button class="btn sm" data-act="toggleS" data-id="'+s.id+'">'+(Number(s.active)?'إيقاف':'تفعيل')+'</button> <button class="btn sm danger" data-act="delS" data-id="'+s.id+'">حذف</button>':'')+'</td></tr>').join("")+'</tbody></table></div></section>'+
+    '<div class="two" style="margin-top:18px"><section class="panel"><h3>تعيين حسب الجهة</h3><p class="note" style="margin-top:-6px">يُسند كل متدربي الجهة إلى المشرف المختار.</p><div class="form" style="grid-template-columns:1fr"><label>جهة التدريب<select id="asEnt"><option value="">اختر الجهة</option>'+ents.map(e=>'<option>'+esc(e)+'</option>').join("")+'</select></label><label>المشرف<select id="asSup"><option value="">بلا مشرف</option>'+sups.map(s=>'<option value="'+s.id+'">'+esc(s.name)+'</option>').join("")+'</select></label></div><div class="actions"><button class="btn primary" data-act="assign">تعيين لكل متدربي الجهة</button></div></section>'+
+    '<section class="panel"><h3>الجهات ومشرفوها <span class="muted" style="font-weight:400">('+ents.length+')</span></h3><div class="scroll"><table class="list"><thead><tr><th>الجهة</th><th>متدربون</th><th>مشرف الكلية</th></tr></thead><tbody>'+
+    ents.map(e=>{ const ts=S.data.trainees.filter(t=>t.entity===e), ss=uniq(ts.map(t=>staffName(t.supervisor_id))), un=ts.filter(t=>!t.supervisor_id).length; return '<tr class="click" data-fent="'+esc(e)+'"><td>'+esc(e)+'</td><td class="num">'+ts.length+'</td><td>'+ss.map(esc).join("، ")+(un?' <span class="tag warn">'+un+' بلا مشرف</span>':'')+'</td></tr>'; }).join("")+'</tbody></table></div></section></div>';
+  return h;
+}
+function staffForm(id){
+  const s=id?S.data.staff.find(x=>Number(x.id)===Number(id)):{};
+  openModal('<div class="head"><div><h2>'+(id?'تعديل بيانات '+(s.role==="admin"?'المسؤول':'المشرف'):'إضافة مشرف')+'</h2></div><button class="x" data-close="modal" aria-label="إغلاق">×</button></div><form class="form" id="sform" novalidate><input type="hidden" name="id" value="'+(id||"")+'">'+
+    '<label class="full">الاسم الكامل<input name="name" required value="'+esc(s.name||"")+'"></label><label>الرقم الوظيفي<input name="username" inputmode="numeric" dir="ltr" required value="'+esc(s.username||"")+'"></label><label>الجوال<input name="phone" inputmode="tel" dir="ltr" value="'+esc(s.phone||"")+'"></label>'+
+    (!id?'<p class="full note" style="margin:0">تُولَّد كلمة مرور مؤقتة تظهر بعد الحفظ، ويُطلب من المشرف تغييرها عند أول دخول.</p>':'')+
+    '<div class="full err" id="serr" role="alert"></div><div class="full actions" style="margin-top:0"><button class="btn primary" type="submit">'+(id?'حفظ':'إضافة المشرف')+'</button><button class="btn" type="button" data-close="modal">إلغاء</button></div></form>');
+  $("#sform").onsubmit=async ev=>{ ev.preventDefault(); try{ const r=await api("staff.save",Object.fromEntries(new FormData(ev.target))); await loadData(); paint(); if(r.tempPassword) showTempPw(ev.target.elements.name.value,ev.target.elements.username.value,r.tempPassword); else { closeModal(); toast("حُفظت البيانات"); } }catch(e){ $("#serr").textContent=e.message; } };
+}
+function showTempPw(name,user,pw){
+  const msg="الأستاذ "+name+"\nحسابك في منصة التدريب التعاوني – "+S.settings.college+":\n"+location.origin+location.pathname.replace(/[^/]*$/,"")+"\nالرقم الوظيفي: "+user+"\nكلمة المرور المؤقتة: "+pw+"\nاختر «منسوبو الكلية»، وستُطلب منك كلمة مرور جديدة عند أول دخول.";
+  openModal('<div class="head"><div><h2>كلمة المرور المؤقتة</h2><div class="muted">'+esc(name)+'</div></div><button class="x" data-close="modal" aria-label="إغلاق">×</button></div><p>أرسلها للمشرف بطريقة خاصة. لن تظهر مرة أخرى.</p><p class="code" style="font-size:22px">'+esc(pw)+'</p><div class="actions"><button class="btn primary" data-act="copy" data-text="'+esc(msg)+'">نسخ رسالة الدخول</button><button class="btn" data-close="modal">تم</button></div>');
+}
+
+/* ---------- admin: notices ---------- */
+function viewNotices(){
+  const aud={all:"الجميع",trainees:"المتدربون",supervisors:"المشرفون"};
+  return '<div class="sec-title"><div><h2>الإعلانات</h2><div class="muted">تظهر للمتدربين في صفحتهم الرئيسية، وللمشرفين في لوحة المتابعة.</div></div></div>'+
+    '<div class="two" style="margin-top:16px"><section class="panel"><h3>إعلان جديد</h3><form class="form" id="nform" style="grid-template-columns:1fr" novalidate><label>العنوان<input id="ntitle" name="title" maxlength="150" placeholder="مثال: موعد تسليم تقرير التدريب النهائي"></label><label>النص<textarea id="nbody" name="body" maxlength="3000"></textarea></label><label>يظهر لـ<select name="audience"><option value="trainees">المتدربون</option><option value="supervisors">المشرفون</option><option value="all">الجميع</option></select></label><div class="err" id="nerr" role="alert"></div><div class="actions" style="margin-top:0"><button class="btn primary" type="submit">نشر الإعلان</button></div></form></section>'+
+    '<section class="panel"><h3>الإعلانات المنشورة</h3>'+(S.data.notices.length?S.data.notices.map(n=>'<div class="notice"><div style="display:flex;gap:10px;align-items:flex-start"><div style="flex:1"><b>'+esc(n.title)+'</b><span class="note">'+esc(fmtT(n.created_at))+' · '+aud[n.audience]+'</span></div><button class="btn sm danger" data-act="delN" data-id="'+n.id+'">حذف</button></div>'+(n.body?'<p>'+esc(n.body)+'</p>':'')+'</div>').join(""):'<div class="empty">لا توجد إعلانات.</div>')+'</section></div>';
+}
+
+/* ---------- admin: log ---------- */
+const ACT={login:["تسجيل دخول",""],login_fail:["محاولة فاشلة","bad"],logout:["خروج","warn"],activate:["تفعيل حساب",""],create:["إضافة",""],update:["تعديل",""],delete:["حذف","bad"],import:["استيراد",""],assign:["تعيين",""],review:["مراجعة تقرير",""],submit:["تسليم تقرير",""],field_eval:["تقييم جهة",""],eval_link:["رابط تقييم",""],access_issue:["رموز تفعيل",""],access_toggle:["إيقاف/تفعيل حساب","warn"],reset_password:["كلمة مرور مؤقتة","warn"],password:["تغيير كلمة المرور",""],settings:["الإعدادات",""],brand:["الشعار",""],backup:["نسخة احتياطية",""],graduate:["نقل للخريجين",""],start_status:["المباشرة",""],toggle:["إيقاف/تفعيل","warn"]};
+const TGT={user:"مستخدم",trainee:"متدرب",visit:"زيارة",weekly:"تقرير أسبوعي",staff:"مشرف",graduate:"خريج",graduates:"خريجون",trainees:"متدربون",notice:"إعلان",eval:"تقييم",settings:"الإعدادات"};
+function viewLog(){
+  if(!S.audit){ loadAudit(); return '<div class="empty">جارٍ تحميل السجل…</div>'; }
+  const a=S.audit, st=a.stats||{}, r=k=>(a.roles.find(x=>x.role===k)||{n:0,logged:0});
+  return '<div class="sec-title"><div><h2>سجل الدخول والتعديلات</h2><div class="muted">آخر 300 حدث: من دخل، ومن أضاف أو عدّل أو حذف.</div></div><button class="btn" data-act="reloadLog">تحديث</button></div>'+
+    '<div class="kpi-row" style="margin:14px 0"><div class="kpi"><b class="num">'+(st.today||0)+'</b><span>دخولاً اليوم</span></div><div class="kpi"><b class="num">'+(st.week||0)+'</b><span>دخولاً آخر 7 أيام</span></div><div class="kpi"><b class="num">'+(st.fails||0)+'</b><span>محاولة فاشلة آخر 7 أيام</span></div><div class="kpi"><b class="num">'+r("trainee").logged+' / '+r("trainee").n+'</b><span>متدرباً دخلوا المنصة</span></div><div class="kpi"><b class="num">'+r("supervisor").logged+' / '+r("supervisor").n+'</b><span>مشرفاً دخلوا المنصة</span></div></div>'+
+    '<div class="toolbar"><select id="akind" aria-label="نوع الحدث"><option value="">كل الأحداث</option><option value="login"'+(S.af.kind==="login"?' selected':'')+'>الدخول والخروج</option><option value="changes"'+(S.af.kind==="changes"?' selected':'')+'>التعديلات</option></select></div>'+
+    '<section class="panel" style="padding:6px 8px"><div class="scroll"><table class="list"><thead><tr><th>الوقت</th><th>المستخدم</th><th>الحدث</th><th>التفاصيل</th><th>عنوان IP</th></tr></thead><tbody>'+
+    (a.rows.length?a.rows.map(e=>{ const k=ACT[e.action]||[e.action,""]; return '<tr><td style="white-space:nowrap">'+esc(fmtT(e.created_at))+'</td><td>'+esc(e.user_name||(e.action==="login_fail"?"رقم: "+(e.target_id||""):"—"))+'</td><td><span class="tag '+k[1]+'">'+esc(k[0])+'</span> <span class="note">'+esc(TGT[e.target]||"")+'</span></td><td class="note">'+esc(e.details||"")+'</td><td class="num note">'+esc(e.ip||"")+'</td></tr>'; }).join(""):'<tr><td colspan="5" class="empty">لا توجد أحداث.</td></tr>')+'</tbody></table></div></section>';
+}
+async function loadAudit(){ try{ S.audit=await api("audit.list",{kind:S.af.kind}); }catch(e){ S.audit={rows:[],stats:{},roles:[]}; toast(e.message); } paint(); }
+
+/* ---------- admin: settings ---------- */
+function viewSettings(){
+  const st=S.settings;
+  return '<div class="sec-title"><div><h2>الإعدادات</h2></div></div><div class="two" style="margin-top:16px"><section class="panel"><h3>الكلية والفصل التدريبي</h3><form class="form" id="setform" novalidate>'+
+    '<label class="full">اسم الكلية<input name="college_name" value="'+esc(st.college)+'"></label><label class="full">اسم الفصل<input name="semester_label" value="'+esc(st.semester)+'"></label>'+
+    '<label>بداية الفصل (ميلادي)<input type="date" name="semester_start" value="'+esc(st.start)+'"><span class="hint">'+esc(fmtH(st.start))+'</span></label><label>عدد الأسابيع<input name="semester_weeks" inputmode="numeric" value="'+st.weeks+'"></label>'+
+    '<label class="full">جهة التواصل للمتدربين<input name="admin_contact" value="'+esc(st.contact)+'" placeholder="اسم المسؤول ورقم التواصل"></label>'+
+    '<label>أقصى حجم للملف (ميجابايت)<input name="max_upload_mb" inputmode="numeric" value="'+st.maxUpload+'"></label><label class="chk" style="flex-direction:row;align-self:end"><input type="checkbox" name="require_visit_report" value="1"'+(st.requireReport?' checked':'')+'> التقرير مطلوب عند تسجيل الزيارة</label>'+
+    '<div class="full err" id="seterr" role="alert"></div><div class="full actions" style="margin-top:0"><button class="btn primary" type="submit">حفظ الإعدادات</button></div></form></section>'+
+    '<section class="panel stack"><div><h3>الهوية البصرية</h3><p class="note" style="margin-top:-6px">شعار المؤسسة (PNG بخلفية شفافة)، وصورة الواجهة (JPG عرضي).</p><div class="actions" style="margin-top:0"><label class="btn">رفع الشعار<input type="file" accept="image/png,image/jpeg,image/webp" data-brand="logo" hidden></label><label class="btn">رفع صورة الواجهة<input type="file" accept="image/jpeg,image/png,image/webp" data-brand="banner" hidden></label></div>'+(st.logo?'<img src="'+esc(st.logo)+'" alt="الشعار الحالي" style="max-height:70px;margin-top:10px">':'')+'</div>'+
+    '<div><h3>النسخ الاحتياطي</h3><p class="note" style="margin-top:-6px">ملف واحد بكل بيانات المنصة (عدا الملفات المرفوعة). احفظه أسبوعياً على الأقل، إضافة إلى النسخ التلقائي في الخادم.</p><a class="btn" href="api.php?a=export&kind=backup">تنزيل نسخة احتياطية</a></div>'+
+    '<div><h3>حسابي</h3>'+pwForm()+'</div></section></div>';
+}
+
+/* ---------- trainee ---------- */
+function viewHome(){
+  const P=S.portal, t=P.t, vs=P.visits, cw=curWeek(), W=WEEKS(), st=S.settings;
+  const vw=new Set(vs.map(v=>weekOf(v.visit_date))), endS=iso(new Date(parseD(st.start).getTime()+(W*7-1)*864e5));
+  const dd=(l,v,ltr)=>'<dt>'+l+'</dt><dd'+(ltr?' class="num" style="text-align:right"':'')+'>'+(v?esc(v):'<span class="muted">—</span>')+'</dd>';
+  const thisW=P.weekly.find(w=>Number(w.week)===cw), returned=P.weekly.filter(w=>w.status==="returned");
+  let h=banner('مرحباً '+String(t.name).split(/\s+/)[0], st.college+' – '+st.semester);
+  if(cw>=1 && !thisW) h+='<div class="callout" style="margin-bottom:18px">لم تسلّم تقرير الأسبوع '+cw+' بعد. <button class="linkbtn" data-nav="weekly">اكتب التقرير الآن</button></div>';
+  if(returned.length) h+='<div class="callout" style="margin-bottom:18px;border-color:var(--danger);background:var(--danger-soft)">أعاد المشرف تقرير الأسبوع '+returned.map(w=>w.week).join("، ")+' للتعديل. <button class="linkbtn" data-nav="weekly">راجع الملاحظات</button></div>';
+  h+='<section class="panel"><div class="hero"><div class="wk">'+(cw<1?'لم يبدأ الفصل التدريبي بعد':'الأسبوع التدريبي')+'<strong class="num">'+(cw<1?0:cw)+' / '+W+'</strong><span class="muted">'+esc(fmtH(st.start))+' – '+esc(fmtH(endS))+'</span></div><div><div class="ruler" style="grid-template-columns:repeat('+W+',1fr)" role="img" aria-label="أسابيع الفصل">';
+  const sub=new Set(P.weekly.map(w=>Number(w.week)));
+  for(let w=1;w<=W;w++) h+='<div class="col'+(w<cw?' past':'')+(w===cw?' now':'')+'" title="الأسبوع '+w+'">'+(vw.has(w)?'<span class="c">زيارة</span>':'')+'<div class="bar'+(sub.has(w)?' full':'')+'" style="height:'+(sub.has(w)?55:0)+'%"></div><div class="base"></div><span class="n num">'+w+'</span></div>';
+  h+='</div><div class="note" style="margin-top:6px">العمود الأخضر: أسبوع سلّمت تقريره. «زيارة»: أسبوع زارك فيه مشرف الكلية.</div></div></div>'+
+    '<div class="figs"><div><b class="num">'+P.weekly.length+'</b><span>تقريراً أسبوعياً سلّمته</span></div><div><b class="num">'+vs.length+'</b><span>زيارة من مشرف الكلية</span></div><div><b style="font-size:19px;padding-top:6px">'+esc(t.start_status||"لم تُحدَّد")+'</b><span>المباشرة في جهة التدريب</span></div></div></section>';
+  if(t.reg_status!=="خريج" && t.start_status!=="مباشر") h+='<div class="callout" style="margin-top:18px">لم تُسجَّل مباشرتك في جهة التدريب بعد. إن كنت باشرت، أبلغ مشرف الكلية.</div>';
+  h+='<div class="two" style="margin-top:18px"><section class="panel"><h3>بيانات تدريبك</h3><dl class="kv">'+dd("الرقم التدريبي",t.acad,1)+dd("القسم",t.dept)+dd("التخصص",t.specialty)+dd("جهة التدريب",t.entity)+dd("قطاع الجهة",t.sector)+dd("المشرف الميداني",t.field_supervisor)+dd("جوال المشرف الميداني",t.field_supervisor_phone,1)+dd("مشرف الكلية",t.supervisor_name)+dd("جوال مشرف الكلية",t.supervisor_phone,1)+'</dl>'+
+    '<p class="note" style="margin:0">إن وجدت خطأ في بياناتك، تواصل مع مسؤول التدريب التعاوني'+(st.contact?' <b>'+esc(st.contact)+'</b>':'')+'.</p></section>'+
+    '<section class="panel"><h3>الإعلانات</h3>'+(P.notices.length?P.notices.map(n=>'<div class="notice"><b>'+esc(n.title)+'</b><span class="note">'+esc(fmtT(n.created_at))+'</span>'+(n.body?'<p>'+esc(n.body)+'</p>':'')+'</div>').join(""):'<div class="empty" style="padding:18px">لا توجد إعلانات حالياً.</div>')+'</section></div>';
+  h+='<section class="panel" style="margin-top:18px"><h3>زيارات مشرف الكلية <span class="muted" style="font-weight:400">('+vs.length+')</span></h3>'+
+    (vs.length?vs.map(v=>{ const c=v.attendance==="متغيب"?"bad":v.attendance==="منتظم"?"":"warn"; return '<div class="visit"><div class="top"><b>'+esc(v.type)+'</b><span class="muted">'+esc(fmtH(v.visit_date))+' <span class="num">('+esc(fmtG(v.visit_date))+')</span></span><span class="tag">الأسبوع '+weekOf(v.visit_date)+'</span></div><div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">'+(v.attendance?'<span class="tag '+c+'">الانتظام: '+esc(v.attendance)+'</span>':'')+(v.rating?'<span class="tag">الأداء: '+esc(v.rating)+'</span>':'')+(Number(v.met_field)?'<span class="tag">قابل المشرف الميداني</span>':'')+'</div></div>'; }).join(""):'<div class="empty" style="padding:18px">لم تُسجَّل زيارات لك بعد.</div>')+'</section>';
+  return h;
+}
+function viewTWeekly(){
+  const P=S.portal, cw=curWeek(), W=WEEKS(), by={}; P.weekly.forEach(w=>by[w.week]=w);
+  if(S.wkSel==null) S.wkSel=Math.max(1,cw);
+  const sel=S.wkSel, w=by[sel], locked=w&&w.status==="reviewed";
+  let h='<div class="sec-title"><div><h2>تقاريري الأسبوعية</h2><div class="muted">اكتب كل أسبوع ما أنجزته في جهة التدريب. يراجعه مشرف الكلية ويضيف ملاحظاته.</div></div></div>'+
+    '<section class="panel" style="margin-top:14px"><h3>اختر الأسبوع</h3><div class="wk-grid">';
+  for(let i=1;i<=W;i++){ const x=by[i]; h+='<button data-wk="'+i+'" class="'+(x?(x.status==="reviewed"?'done':x.status==="returned"?'ret':'done'):'')+(i===cw?' now':'')+'"'+(i>Math.max(1,cw)?' disabled':'')+(i===sel?' aria-current="true" style="box-shadow:0 0 0 2px var(--ink)"':'')+'><span class="num">'+i+'</span><small>'+(x?(x.status==="reviewed"?'روجع':x.status==="returned"?'مُعاد':'سُلّم'):(i>cw?'':'—'))+'</small></button>'; }
+  h+='</div></section><section class="panel" style="margin-top:18px"><div class="head" style="margin-bottom:6px"><div><h3 style="margin:0">تقرير الأسبوع '+sel+'</h3>'+(w?'<div style="margin-top:4px">'+wTag(w.status)+' <span class="note">'+esc(fmtT(w.submitted_at))+'</span></div>':'')+'</div></div>'+
+    (w&&w.sup_comment?'<div class="callout'+(w.status==="reviewed"?' ok':'')+'" style="margin-bottom:14px"><b>ملاحظة المشرف:</b> '+esc(w.sup_comment)+'</div>':'');
+  if(locked) h+='<h3>المهام المنجزة</h3><p style="white-space:pre-wrap">'+esc(w.tasks)+'</p>'+(w.skills?'<h3>المهارات المكتسبة</h3><p style="white-space:pre-wrap">'+esc(w.skills)+'</p>':'')+(w.challenges?'<h3>الصعوبات</h3><p style="white-space:pre-wrap">'+esc(w.challenges)+'</p>':'')+(Number(w.has_file)?'<a class="btn sm" href="api.php?a=file&kind=weekly&id='+w.id+'" target="_blank" rel="noopener">فتح المرفق</a>':'');
+  else h+='<form class="form" id="twform" novalidate><input type="hidden" name="week" value="'+sel+'">'+
+    '<label class="full">المهام التي أنجزتها هذا الأسبوع<textarea id="tw_tasks" name="tasks" required placeholder="مثال: تركيب وتهيئة 4 أجهزة حاسب في قسم الشؤون الإدارية، وتوصيلها بالشبكة…">'+esc(w?w.tasks:"")+'</textarea></label>'+
+    '<label class="full">المهارات التي اكتسبتها<textarea id="tw_skills" name="skills">'+esc(w?w.skills||"":"")+'</textarea></label>'+
+    '<label class="full">الصعوبات التي واجهتك (اختياري)<textarea id="tw_ch" name="challenges" style="min-height:60px">'+esc(w?w.challenges||"":"")+'</textarea></label>'+
+    '<label>عدد ساعات التدريب هذا الأسبوع<input name="hours" inputmode="decimal" dir="ltr" value="'+esc(w&&w.hours!=null?w.hours:"")+'"></label>'+
+    '<label>مرفق (اختياري)<input type="file" name="file" accept=".pdf,image/*"><span class="hint">'+(w&&Number(w.has_file)?'يوجد مرفق سابق: '+esc(w.file_name||"")+'. اختر ملفاً لاستبداله.':'صورة من العمل أو ملف PDF، حتى '+S.settings.maxUpload+' ميجابايت.')+'</span></label>'+
+    '<div class="full err" id="twerr" role="alert"></div><div class="full actions" style="margin-top:0"><button class="btn primary" type="submit" id="twbtn">'+(w?'حفظ التعديلات':'تسليم التقرير')+'</button></div></form>';
+  return h+'</section>';
+}
+function viewAccount(){
+  return '<div class="sec-title"><div><h2>حسابي</h2></div></div><section class="panel" style="max-width:560px;margin-top:16px"><dl class="kv"><dt>الاسم</dt><dd>'+esc(S.user.name)+'</dd><dt>'+(role()==="trainee"?'الرقم التدريبي':'الرقم الوظيفي')+'</dt><dd class="num" style="text-align:right">'+esc(S.user.username)+'</dd></dl><h3>تغيير كلمة المرور</h3>'+pwForm()+'</section>';
+}
+
+/* ---------- admin forms ---------- */
+function traineeForm(id){
+  const t=id?tById(id):{}, sups=S.data.staff.filter(s=>s.role==="supervisor");
+  const Lk=k=>uniq(S.data.trainees.map(x=>x[k]));
+  const F=(n,l,v,ex,full)=>'<label'+(full?' class="full"':'')+'>'+l+'<input name="'+n+'" value="'+esc(v||"")+'" '+(ex||"")+'></label>';
+  const SEL=(n,l,list,v)=>'<label>'+l+'<select name="'+n+'">'+opt(list,v||"","غير محدد")+'</select></label>';
+  openModal('<div class="head"><div><h2>'+(id?'تعديل بيانات المتدرب':'إضافة متدرب')+'</h2></div><button class="x" data-close="modal" aria-label="إغلاق">×</button></div><form class="form" id="tform" novalidate><input type="hidden" name="id" value="'+(id||"")+'">'+
+    F("name","اسم المتدرب",t.name,"required",1)+F("acad","الرقم التدريبي",t.acad,'required inputmode="numeric" dir="ltr"')+F("phone","جوال المتدرب",t.phone,'inputmode="tel" dir="ltr"')+
+    F("dept","القسم",t.dept,'list="dldept"')+F("specialty","التخصص",t.specialty,'list="dlspec"')+F("gpa","المعدل",t.gpa,'dir="ltr"')+F("nid","رقم الهوية",t.nid,'inputmode="numeric" dir="ltr"')+
+    F("entity","جهة التدريب",t.entity,'list="dlent"',1)+SEL("sector","قطاع الجهة",L("sectors"),t.sector)+
+    '<label>مشرف الكلية<select name="supervisor_id"><option value="">غير معيّن</option>'+sups.map(s=>'<option value="'+s.id+'"'+(Number(t.supervisor_id)===Number(s.id)?' selected':'')+'>'+esc(s.name)+'</option>').join("")+'</select></label>'+
+    F("field_supervisor","المشرف الميداني",t.field_supervisor)+F("field_supervisor_phone","جوال المشرف الميداني",t.field_supervisor_phone,'inputmode="tel" dir="ltr"')+
+    SEL("reg_status","اكتمال التسجيل",L("reg"),t.reg_status)+SEL("start_status","المباشرة",L("start"),t.start_status)+F("letter_no","رقم الخطاب",t.letter_no)+
+    '<label class="full">ملاحظات<textarea name="notes">'+esc(t.notes||"")+'</textarea></label>'+
+    '<datalist id="dlent">'+Lk("entity").map(e=>'<option value="'+esc(e)+'">').join("")+'</datalist><datalist id="dlspec">'+Lk("specialty").map(e=>'<option value="'+esc(e)+'">').join("")+'</datalist><datalist id="dldept">'+Lk("dept").map(e=>'<option value="'+esc(e)+'">').join("")+'</datalist>'+
+    '<div class="full err" id="terr" role="alert"></div><div class="full actions" style="margin-top:0"><button class="btn primary" type="submit">'+(id?'حفظ التعديلات':'إضافة المتدرب')+'</button><button class="btn" type="button" data-close="modal">إلغاء</button>'+(id?'<button class="btn danger" type="button" data-act="delT" data-id="'+id+'" style="margin-inline-start:auto">حذف المتدرب</button>':'')+'</div></form>');
+  const form=$("#tform");
+  form.elements.entity.addEventListener("change",()=>{ const m=S.data.trainees.find(x=>x.entity===form.elements.entity.value.trim()); if(m&&m.sector&&!form.elements.sector.value) form.elements.sector.value=m.sector; });
+  form.onsubmit=async ev=>{ ev.preventDefault(); try{ await api("trainee.save",Object.fromEntries(new FormData(form))); closeModal(); toast(id?"حُفظت التعديلات":"أُضيف المتدرب"); refresh(); }catch(e){ $("#terr").textContent=e.message; } };
+}
+const FIELDS={trainees:[["acad","الرقم التدريبي *"],["name","اسم المتدرب *"],["nid","رقم الهوية"],["phone","الجوال"],["dept","القسم"],["specialty","التخصص"],["gpa","المعدل"],["entity","جهة التدريب"],["sector","القطاع"],["field_supervisor","المشرف الميداني"],["field_supervisor_phone","جوال المشرف الميداني"],["supervisor_name","مشرف الكلية (بالاسم)"],["letter_no","رقم الخطاب"]],
+  graduates:[["acad","الرقم التدريبي *"],["name","الاسم *"],["phone","الجوال"],["dept","القسم"],["specialty","التخصص"],["gpa","المعدل"]]};
+function importForm(target){
+  openModal('<div class="head"><div><h2>'+(target==="graduates"?'استيراد الخريجين':'استيراد كشف المتدربين')+'</h2><div class="muted">من ملف Excel (xlsx) أو CSV، مثل الكشوف المستخرجة من نظام رايات.</div></div><button class="x" data-close="modal" aria-label="إغلاق">×</button></div>'+
+    '<form id="iform" novalidate><label class="drop" id="idrop"><input type="file" name="file" accept=".xlsx,.csv" style="display:none"><span id="ifname">اختر ملف الكشف</span></label><div class="err" id="ierr" role="alert" style="margin-top:8px"></div><div class="actions"><button class="btn primary" type="submit" id="ibtn">قراءة الملف</button><button class="btn" type="button" data-close="modal">إلغاء</button></div></form><div id="imap"></div>');
+  const form=$("#iform");
+  form.elements.file.onchange=()=>{ const f=form.elements.file.files[0]; $("#ifname").textContent=f?f.name:"اختر ملف الكشف"; $("#idrop").classList.toggle("has",!!f); };
+  form.onsubmit=async ev=>{
+    ev.preventDefault(); const err=$("#ierr"), btn=$("#ibtn"); err.textContent="";
+    if(!form.elements.file.files[0]){ err.textContent="اختر الملف أولاً."; return; }
+    btn.disabled=true; btn.textContent="جارٍ القراءة…";
+    try{
+      const fd=new FormData(form), r=await api("import.preview",fd,true);
+      form.hidden=true;
+      const fl=FIELDS[target];
+      $("#imap").innerHTML='<p>وُجد <b class="num">'+r.count+'</b> سطراً. طابِق أعمدة الملف مع حقول المنصة (خمّنتُ ما أمكن):</p><div class="map-grid">'+fl.map(([k,l])=>'<label>'+l+'<select data-map="'+k+'"><option value="">— لا يوجد —</option>'+r.headers.map((hd,i)=>'<option value="'+i+'"'+(r.mapping[k]===i?' selected':'')+'>'+esc(hd||("عمود "+(i+1)))+'</option>').join("")+'</select></label>').join("")+'</div>'+
+        '<h3 style="margin-top:16px">معاينة أول الأسطر</h3><div class="scroll"><table class="list"><thead><tr>'+r.headers.map(hd=>'<th>'+esc(hd)+'</th>').join("")+'</tr></thead><tbody>'+r.sample.map(row=>'<tr>'+r.headers.map((_,i)=>'<td>'+esc(row[i]||"")+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>'+
+        '<p class="note">المتدرب الموجود مسبقاً (بنفس الرقم التدريبي) تُحدَّث بياناته، والجديد يُضاف. الحقول الفارغة في الملف لا تمسح البيانات الموجودة.</p><div class="err" id="icerr" role="alert"></div><div class="actions"><button class="btn primary" data-act="importGo" data-token="'+r.token+'" data-target="'+target+'">استيراد '+r.count+' سطراً</button><button class="btn" data-close="modal">إلغاء</button></div>';
+    }catch(e){ err.textContent=e.message; btn.disabled=false; btn.textContent="قراءة الملف"; }
+  };
+}
+
+/* ---------- modal ---------- */
+function openModal(html){ $("#modal").innerHTML='<div class="modal-scrim" data-close="modal-bg"><div class="modal" role="dialog" aria-modal="true">'+html+'</div></div>'; const f=$("#modal").querySelector("input:not([type=hidden]):not([readonly]),select,textarea,button:not(.x)"); if(f) f.focus(); }
+function closeModal(){ $("#modal").innerHTML=""; }
+function confirmBox(title,body,label,onYes,danger){
+  openModal('<div class="head"><div><h2>'+esc(title)+'</h2></div><button class="x" data-close="modal" aria-label="إغلاق">×</button></div><p>'+esc(body)+'</p><div class="err" id="cerr" role="alert"></div><div class="actions"><button class="btn '+(danger===false?'primary':'danger')+'" id="cyes">'+esc(label)+'</button><button class="btn" data-close="modal">إلغاء</button></div>');
+  $("#cyes").onclick=async()=>{ $("#cyes").disabled=true; try{ await onYes(); }catch(e){ const c=$("#cerr"); if(c){ c.textContent=e.message; $("#cyes").disabled=false; } else toast(e.message); } };
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click",async ev=>{
+  if(ev.target.closest("a[href]")) return;
+  const el=ev.target.closest("[data-nav],[data-open],[data-act],[data-close],[data-ltab],[data-tmode],[data-fdept],[data-fent],[data-wk],[data-sel]");
+  if(!el) return;
+  if(el.dataset.sel!=null){ ev.stopPropagation(); S.sel[el.dataset.sel]=el.checked; paint(); return; }
+  if(el.dataset.close){
+    if(el.dataset.close==="modal-bg"){ if(ev.target===el) closeModal(); return; }
+    if(el.dataset.close==="drawer" && ev.target!==el && !ev.target.closest(".x")) return;
+    if(el.dataset.close==="drawer"){ S.openT=null; paintDrawer(); } else closeModal(); return;
+  }
+  if(el.dataset.ltab){ S.loginTab=el.dataset.ltab; S.tMode="login"; paint(); const f=$("#luser")||$("#lacad"); if(f) f.focus(); return; }
+  if(el.dataset.tmode){ S.tMode=el.dataset.tmode; paint(); const f=$("#luser")||$("#lacad"); if(f) f.focus(); return; }
+  if(el.dataset.nav){ S.view=el.dataset.nav; if(el.dataset.fSt!=null){ S.f=Object.assign({},S.f,{st:el.dataset.fSt,mine:true}); } S.openT=null; closeModal(); if(S.view==="weekly" && isStaff()) S.weekly=null; if(S.view==="log") S.audit=null; history.replaceState(null,"","#"+S.view); paint(); scrollTo(0,0); return; }
+  if(el.dataset.open){ S.openT=Number(el.dataset.open); closeModal(); paintDrawer(); return; }
+  if(el.dataset.fdept!=null){ S.f=Object.assign({},S.f,{dept:el.dataset.fdept,spec:"",entity:"",sector:"",st:"",sup:"",q:""}); S.view="trainees"; paint(); scrollTo(0,0); return; }
+  if(el.dataset.fent!=null){ S.f=Object.assign({},S.f,{entity:el.dataset.fent,dept:"",spec:"",sector:"",st:"",sup:"",q:""}); S.view="trainees"; paint(); scrollTo(0,0); return; }
+  if(el.dataset.wk){ S.wkSel=Number(el.dataset.wk); paint(); return; }
+  const a=el.dataset.act, id=el.dataset.id;
+  try{
+    if(a==="logout"){ const r=await api("logout"); S.csrf=r.csrf; S.user=null; S.data=null; S.portal=null; S.weekly=null; S.grads=null; S.audit=null; S.openT=null; S.wkSel=null; closeModal(); $("#app").dataset.screen=""; paint(); }
+    else if(a==="copy") copyText(el.dataset.text,"نُسخ");
+    else if(a==="visit") visitForm(Number(id));
+    else if(a==="addT") traineeForm(null);
+    else if(a==="editT") traineeForm(Number(id));
+    else if(a==="delT"){ const t=tById(id); confirmBox("حذف المتدرب","سيُحذف «"+(t?t.name:"")+"» مع زياراته وتقاريره وحسابه نهائياً.","حذف المتدرب",async()=>{ await api("trainee.delete",{id}); S.openT=null; closeModal(); toast("حُذف المتدرب"); refresh(); }); }
+    else if(a==="clearF"){ S.f={q:"",dept:"",spec:"",entity:"",sector:"",st:"",sup:"",acc:"",mine:S.f.mine}; paint(); }
+    else if(a==="delV"){ confirmBox("حذف الزيارة","ستُحذف الزيارة وتقريرها المرفق نهائياً.","حذف الزيارة",async()=>{ await api("visit.delete",{id}); closeModal(); toast("حُذفت الزيارة"); refresh(); }); }
+    else if(a==="startSt"){ const t=tById(id); openModal('<div class="head"><div><h2>تحديث المباشرة</h2><div class="muted">'+esc(t.name)+'</div></div><button class="x" data-close="modal" aria-label="إغلاق">×</button></div><div class="actions" style="margin-top:0">'+L("start").map(s=>'<button class="btn'+(t.start_status===s?' primary':'')+'" data-act="setSt" data-id="'+id+'" data-st="'+esc(s)+'">'+esc(s)+'</button>').join("")+'</div>'); }
+    else if(a==="setSt"){ await api("trainee.status",{id,start_status:el.dataset.st}); closeModal(); toast("حُدّثت المباشرة"); refresh(); }
+    else if(a==="evalLink") evalLink(Number(id));
+    else if(a==="renewEval"){ confirmBox("استبدال الرابط","سيتوقف الرابط القديم، ويلزم إرسال الرابط الجديد للمشرف الميداني.","استبدال الرابط",async()=>{ await api("eval.link",{trainee_id:id,renew:1}); await loadData(); evalLink(Number(id)); }); }
+    else if(a==="openEval") openEval(Number(id));
+    else if(a==="delEval"){ confirmBox("حذف التقييم","سيُحذف التقييم، ويمكن للجهة إرسال تقييم جديد بنفس الرابط.","حذف التقييم",async()=>{ await api("eval.delete",{id}); closeModal(); toast("حُذف التقييم"); refresh(); }); }
+    else if(a==="openW") openWeekly(Number(id));
+    else if(a==="reviewW"){ const c=$("#wform").elements.comment.value; await api("weekly.review",{id,status:el.dataset.st,comment:c}).catch(e=>{ $("#werr").textContent=e.message; throw null; }); closeModal(); toast(el.dataset.st==="reviewed"?"اعتُمد التقرير":"أُعيد التقرير للمتدرب"); S.weekly=null; await loadData(); paint(); }
+    else if(a==="reloadW"){ S.weekly=null; paint(); }
+    else if(a==="import") importForm("trainees");
+    else if(a==="importG") importForm("graduates");
+    else if(a==="importGo"){
+      const map={}; document.querySelectorAll("[data-map]").forEach(s=>{ if(s.value!=="") map[s.dataset.map]=Number(s.value); });
+      el.disabled=true; el.textContent="جارٍ الاستيراد…";
+      try{ const r=await api("import.commit",{token:el.dataset.token,mapping:map,target:el.dataset.target});
+        closeModal(); toast("أُضيف "+r.added+"، وحُدّث "+r.updated+(r.skipped?"، وتُجوهل "+r.skipped+" سطراً ناقصاً":""));
+        if(r.unknownSupervisors && r.unknownSupervisors.length) setTimeout(()=>openModal('<div class="head"><div><h2>مشرفون غير مسجّلين</h2></div><button class="x" data-close="modal" aria-label="إغلاق">×</button></div><p>هذه الأسماء في عمود مشرف الكلية لا تطابق أي مشرف مسجّل، فلم يُعيَّن متدربوها:</p><p>'+r.unknownSupervisors.map(esc).join("، ")+'</p><p class="note">أضفهم من صفحة «المشرفون» بنفس الاسم ثم أعد الاستيراد، أو عيّنهم حسب الجهة.</p>'),300);
+        if(el.dataset.target==="graduates"){ S.grads=null; } refresh();
+      }catch(e){ $("#icerr").textContent=e.message; el.disabled=false; el.textContent="استيراد"; }
+    }
+    else if(a==="toGrad"){ const ids=Object.keys(S.sel).filter(k=>S.sel[k]).map(Number); confirmBox("نقل إلى الخريجين","سيُنسخ "+ids.length+" متدرباً إلى قائمة الخريجين، وتصبح حالتهم «خريج».","نقل إلى الخريجين",async()=>{ const r=await api("grad.fromTrainees",{ids}); S.sel={}; S.grads=null; closeModal(); toast("نُقل "+r.count+" إلى الخريجين"); refresh(); },false); }
+    else if(a==="selNone"){ S.sel={}; paint(); }
+    else if(a==="issueAll"){ confirmBox("توليد رموز التفعيل","سيُولَّد رمز تفعيل لكل متدرب ليس له حساب ("+S.data.trainees.filter(t=>!t.user_id).length+" متدرباً).","توليد الرموز",async()=>{ const r=await api("access.issue",{all:1}); closeModal(); toast("وُلّد "+r.count+" رمزاً"); refresh(); },false); }
+    else if(a==="issue"){ await api("access.issue",{ids:[Number(id)]}); toast("وُلّد رمز التفعيل"); refresh(); }
+    else if(a==="reissue"){ const t=tById(id); confirmBox("رمز تفعيل جديد","ستُلغى كلمة مرور «"+t.name+"» الحالية، ويلزمه التفعيل من جديد بالرمز الجديد.","توليد رمز جديد",async()=>{ await api("access.issue",{ids:[Number(id)],reset:1}); closeModal(); toast("وُلّد رمز جديد"); refresh(); }); }
+    else if(a==="accToggle"){ await api("access.toggle",{id}); refresh(); }
+    else if(a==="addG") gradForm(null);
+    else if(a==="editG") gradForm(Number(id));
+    else if(a==="delG"){ confirmBox("حذف الخريج","ستُحذف بيانات الخريج نهائياً.","حذف",async()=>{ await api("grad.delete",{id}); S.grads=await api("grad.list"); closeModal(); toast("حُذف"); paint(); }); }
+    else if(a==="addS") staffForm(null);
+    else if(a==="editS") staffForm(Number(id));
+    else if(a==="resetS"){ const s=S.data.staff.find(x=>Number(x.id)===Number(id)); confirmBox("كلمة مرور مؤقتة","ستُلغى كلمة مرور «"+s.name+"» الحالية وتُولَّد كلمة مؤقتة.","توليد كلمة مؤقتة",async()=>{ const r=await api("staff.reset",{id}); await loadData(); paint(); showTempPw(s.name,s.username,r.tempPassword); }); }
+    else if(a==="toggleS"){ await api("staff.toggle",{id}); refresh(); }
+    else if(a==="delS"){ const s=S.data.staff.find(x=>Number(x.id)===Number(id)); confirmBox("حذف المشرف","سيُحذف حساب «"+s.name+"». تبقى زياراته، ويصبح متدربوه بلا مشرف.","حذف المشرف",async()=>{ await api("staff.delete",{id}); closeModal(); toast("حُذف المشرف"); refresh(); }); }
+    else if(a==="assign"){ const e=$("#asEnt").value, v=$("#asSup").value; if(!e){ toast("اختر جهة التدريب أولاً"); return; } const r=await api("trainee.assign",{entity:e,supervisor_id:v}); toast("عُيّن "+r.count+" متدرباً"); refresh(); }
+    else if(a==="delN"){ await api("notice.delete",{id}); toast("حُذف الإعلان"); refresh(); }
+    else if(a==="reloadLog"){ S.audit=null; paint(); }
+  }catch(e){ if(e) toast(e.message); }
+});
+document.addEventListener("keydown",ev=>{
+  if(ev.key==="Escape"){ if($("#modal").innerHTML) closeModal(); else if(S.openT){ S.openT=null; paintDrawer(); } }
+  if(ev.key==="Enter" && ev.target.matches("tr[data-open],tr[data-act]")) ev.target.click();
+});
+document.addEventListener("input",ev=>{
+  const id=ev.target.id, v=ev.target.value;
+  if(ev.target.closest("form")) S.dirty=true;
+  if(id==="fq"){ S.f.q=v; paint(); } else if(id==="vq"){ S.vf.q=v; paint(); } else if(id==="wq"){ S.wf.q=v; paint(); } else if(id==="gq"){ S.gf.q=v; paint(); }
+});
+document.addEventListener("change",async ev=>{
+  const el=ev.target, id=el.id, v=el.value;
+  const map={fdept:"dept",fspec:"spec",fent:"entity",fsector:"sector",fst:"st",fsup:"sup",facc:"acc"};
+  if(map[id]){ S.f[map[id]]=v; if(id==="fdept") S.f.spec=""; if(id==="fsector") S.f.entity=""; paint(); }
+  else if(id==="fmine"){ S.f.mine=el.checked; paint(); }
+  else if(id==="vsup"){ S.vf.sup=v; paint(); }
+  else if(id==="wst"){ S.wf.status=v; paint(); }
+  else if(id==="gst"){ S.gf.st=v; paint(); } else if(id==="gterm"){ S.gf.term=v; paint(); }
+  else if(id==="akind"){ S.af.kind=v; S.audit=null; paint(); }
+  else if(id==="selAll"){ const {list}=filteredTrainees(); list.forEach(t=>S.sel[t.id]=el.checked); paint(); }
+  else if(id==="bulkSup" && v){ const ids=Object.keys(S.sel).filter(k=>S.sel[k]).map(Number); try{ const r=await api("trainee.assign",{ids,supervisor_id:v==="_none"?"":v}); S.sel={}; toast("عُيّن "+r.count+" متدرباً"); refresh(); }catch(e){ toast(e.message); } }
+  else if(el.dataset.brand){ const f=el.files[0]; if(!f) return; const fd=new FormData(); fd.append("file",f); fd.append("kind",el.dataset.brand); try{ S.settings=await api("brand.upload",fd,true); brand(); toast("حُفظت الصورة"); paint(); }catch(e){ toast(e.message); } }
+});
+document.addEventListener("submit",async ev=>{
+  const f=ev.target;
+  if(f.id==="pwform"){ ev.preventDefault(); submitPw(f); }
+  else if(f.id==="nform"){ ev.preventDefault(); const err=$("#nerr"); err.textContent=""; try{ await api("notice.save",Object.fromEntries(new FormData(f))); f.reset(); toast("نُشر الإعلان"); refresh(); }catch(e){ err.textContent=e.message; } }
+  else if(f.id==="setform"){ ev.preventDefault(); const err=$("#seterr"); err.textContent=""; const d=Object.fromEntries(new FormData(f)); if(!f.elements.require_visit_report.checked) d.require_visit_report=""; try{ await api("settings.save",d); await loadSession(); brand(); toast("حُفظت الإعدادات"); paint(); }catch(e){ err.textContent=e.message; } }
+  else if(f.id==="twform"){ ev.preventDefault(); const err=$("#twerr"), btn=$("#twbtn"), file=f.elements.file.files[0]; err.textContent="";
+    if(file && file.size>S.settings.maxUpload*1048576){ err.textContent="حجم الملف أكبر من "+S.settings.maxUpload+" ميجابايت."; return; }
+    btn.disabled=true; btn.textContent="جارٍ الإرسال…";
+    try{ await api("weekly.submit",new FormData(f),true); toast("سُلّم التقرير لمشرفك"); S.portal=await api("portal"); paint(); }catch(e){ err.textContent=e.message; btn.disabled=false; btn.textContent="تسليم التقرير"; } }
+});
+
+boot();
+})();
+
+</script>
+
+</body>
+</html>
