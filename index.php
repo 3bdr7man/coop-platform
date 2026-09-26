@@ -3,6 +3,7 @@ declare(strict_types=1);
 require __DIR__ . '/app/bootstrap.php';
 security_headers();
 header('Content-Type: text/html; charset=utf-8');
+header('Cache-Control: no-cache, no-store, must-revalidate');
 if (!installed()) { header('Location: install.php'); exit; }
 $college = h(setting('college_name', 'الكلية التقنية ببيشة'));
 $v = APP_VERSION;

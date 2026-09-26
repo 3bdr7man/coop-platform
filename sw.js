@@ -1,6 +1,6 @@
 /* يخزّن واجهة المنصة لتفتح بسرعة، ولا يخزّن أي بيانات أو ملفات خاصة. */
-const CACHE = "coop-shell-v1";
-const SHELL = ["assets/app.css?v=1.0.0", "assets/app.js?v=1.0.0", "assets/icon.svg", "assets/icon-192.png", "manifest.webmanifest"];
+const CACHE = "coop-shell-v3";
+const SHELL = ["assets/app.css?v=1.0.2", "assets/app.js?v=1.0.2", "assets/icon.svg", "assets/icon-192.png", "manifest.webmanifest"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", e => {
