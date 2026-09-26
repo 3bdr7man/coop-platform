@@ -6,7 +6,7 @@ const S = {
   settings:null, user:null, csrf:"", view:"", data:null, portal:null, loading:false,
   f:{q:"",dept:"",spec:"",entity:"",sector:"",st:"",sup:"",acc:"",mine:true},
   vf:{q:"",sup:""}, wf:{status:"submitted",q:""}, gf:{q:"",st:"",term:""}, af:{kind:""},
-  openT:null, loginTab:"trainee", tMode:"login", grads:null, audit:null, weekly:null, wkSel:null, sel:{}
+  openT:null, sup:{q:"",filter:"",data:null}, loginTab:"trainee", tMode:"login", grads:null, audit:null, weekly:null, wkSel:null, sel:{}
 };
 
 /* ---------- helpers ---------- */
@@ -45,18 +45,23 @@ function toast(msg){ const t=$("#toast"); t.innerHTML='<div class="toast" role="
 async function copyText(txt,okMsg){ try{ await navigator.clipboard.writeText(txt); toast(okMsg||"نُسخ"); return true; }catch(e){ toast("تعذّر النسخ تلقائياً. انسخ النص يدوياً."); return false; } }
 
 /* ---------- API ---------- */
-async function api(a, body, form){
-  const o={method:"POST",credentials:"same-origin",headers:{"X-CSRF":S.csrf}};
+async function api(a, body, form, retried){
+  const o={method:"POST",credentials:"same-origin",cache:"no-store",headers:{"X-CSRF":S.csrf}};
   if(form){ o.body=body; } else { o.headers["Content-Type"]="application/json"; o.body=JSON.stringify(body||{}); }
   let r, j;
   try{ r=await fetch("api.php?a="+encodeURIComponent(a),o); }catch(e){ throw new Error("تعذّر الاتصال بالخادم. تحقّق من الإنترنت وأعد المحاولة."); }
-  try{ j=await r.json(); }catch(e){ throw new Error("استجابة غير متوقعة من الخادم (رمز "+r.status+")."); }
-  if(r.status===401 || r.status===419){ await loadSession(); if(r.status===401){ S.user=null; paint(); } throw new Error(j.error||"انتهت الجلسة."); }
+  try{ j=await r.json(); }catch(e){ throw new Error("استجابة غير متوقعة من الخادم (رمز "+r.status+"). حدّث الصفحة وأعد المحاولة."); }
+  if(r.status===419 && !retried){ await loadSession(); if(S.user) return api(a, body, form, true); }
+  if(r.status===401 || r.status===419){
+    try{ await loadSession(); }catch(e){}
+    if(!S.user && !["login","activate"].includes(a)){ S.data=null; S.portal=null; S.openT=null; closeModal(); $("#app").dataset.screen=""; paint(); setTimeout(()=>{ const e=$("#lerr"); if(e) e.textContent="انتهت جلستك. سجّل الدخول مرة أخرى."; },50); }
+    throw new Error(j.error||"انتهت الجلسة.");
+  }
   if(!j.ok) throw new Error(j.error||"تعذّر تنفيذ الطلب.");
   return j.data;
 }
 async function loadSession(){
-  const r=await fetch("api.php?a=session",{credentials:"same-origin"}); const j=await r.json();
+  const r=await fetch("api.php?a=session",{credentials:"same-origin",cache:"no-store"}); const j=await r.json();
   if(!j.ok) throw new Error(j.error||"تعذّر فتح المنصة.");
   S.csrf=j.data.csrf; S.settings=j.data.settings; S.user=j.data.user||null;
 }
@@ -98,7 +103,7 @@ function tabsFor(){
   const r=role();
   if(r==="trainee") return [["home","الرئيسية"],["weekly","تقاريري الأسبوعية"],["account","حسابي"]];
   const t=[["dash","لوحة المتابعة"],["trainees","المتدربون"],["visits","الزيارات"],["weekly","التقارير الأسبوعية"],["evals","تقييم الجهات"]];
-  if(r==="admin") t.push(["access","حسابات المتدربين"],["grads","الخريجون"],["staff","المشرفون"],["notices","الإعلانات"],["log","السجل"],["settings","الإعدادات"]);
+  if(r==="admin") t.push(["access","حسابات المتدربين"],["support","دعم الدخول"],["grads","الخريجون"],["staff","المشرفون"],["notices","الإعلانات"],["log","السجل"],["settings","الإعدادات"]);
   else t.push(["account","حسابي"]);
   return t;
 }
@@ -116,7 +121,7 @@ function paint(){
     if(!tabs.some(t=>t[0]===S.view)) S.view=tabs[0][0];
     $("#tabs").hidden=false;
     $("#tabsInner").innerHTML=tabs.map(t=>'<button data-nav="'+t[0]+'"'+(S.view===t[0]?' aria-current="page"':'')+'>'+t[1]+'</button>').join("");
-    const V={dash:viewDash,trainees:viewTrainees,visits:viewVisits,weekly:r==="trainee"?viewTWeekly:viewWeekly,evals:viewEvals,access:viewAccess,grads:viewGrads,staff:viewStaff,notices:viewNotices,log:viewLog,settings:viewSettings,home:viewHome,account:viewAccount};
+    const V={dash:viewDash,trainees:viewTrainees,visits:viewVisits,weekly:r==="trainee"?viewTWeekly:viewWeekly,evals:viewEvals,access:viewAccess,grads:viewGrads,staff:viewStaff,notices:viewNotices,log:viewLog,support:viewSupport,settings:viewSettings,home:viewHome,account:viewAccount};
     keepFocus(()=>{ $("#app").innerHTML=(V[S.view]||viewDash)(); });
     if(isStaff()) paintDrawer(); else $("#drawer").innerHTML="";
   } finally { painting=false; }
@@ -458,7 +463,7 @@ function viewStaff(){
   let h='<div class="sec-title"><div><h2>المشرفون والتعيين</h2><p class="muted" style="margin:0">أضف مشرفي الكلية بأرقامهم الوظيفية. يدخل كل مشرف بكلمة مرور مؤقتة ثم يغيّرها.</p></div><button class="btn primary" data-act="addS">إضافة مشرف</button></div>'+
     '<section class="panel" style="margin-top:16px;padding:6px 8px"><div class="scroll"><table class="list"><thead><tr><th>الاسم</th><th>الرقم الوظيفي</th><th>الجوال</th><th>متدربون</th><th>آخر دخول</th><th></th></tr></thead><tbody>'+
     staff.map(s=>'<tr><td><b>'+esc(s.name)+'</b> '+(s.role==="admin"?'<span class="tag">المسؤول</span>':'')+(!Number(s.active)?' <span class="tag bad">موقوف</span>':'')+(Number(s.must_change)?' <span class="tag warn">لم يغيّر المؤقتة</span>':'')+'</td><td class="num">'+esc(s.username)+'</td><td class="num">'+esc(s.phone||"—")+'</td><td class="num">'+(s.role==="admin"?"—":S.data.trainees.filter(t=>Number(t.supervisor_id)===Number(s.id)).length)+'</td><td>'+(s.last_login?esc(fmtT(s.last_login)):'<span class="muted">لم يدخل</span>')+'</td>'+
-      '<td style="text-align:end;white-space:nowrap"><button class="btn sm" data-act="editS" data-id="'+s.id+'">تعديل</button>'+(s.role!=="admin"?' <button class="btn sm" data-act="resetS" data-id="'+s.id+'">كلمة مرور مؤقتة</button> <button class="btn sm" data-act="toggleS" data-id="'+s.id+'">'+(Number(s.active)?'إيقاف':'تفعيل')+'</button> <button class="btn sm danger" data-act="delS" data-id="'+s.id+'">حذف</button>':'')+'</td></tr>').join("")+'</tbody></table></div></section>'+
+      '<td style="text-align:end;white-space:nowrap"><button class="btn sm" data-act="editS" data-id="'+s.id+'">تعديل</button>'+(Number(s.id)!==Number(S.user.id)?' <button class="btn sm" data-act="resetS" data-id="'+s.id+'">كلمة مرور مؤقتة</button> <button class="btn sm" data-act="toggleS" data-id="'+s.id+'">'+(Number(s.active)?'إيقاف':'تفعيل')+'</button> <button class="btn sm danger" data-act="delS" data-id="'+s.id+'">حذف</button>':'')+'</td></tr>').join("")+'</tbody></table></div></section>'+
     '<div class="two" style="margin-top:18px"><section class="panel"><h3>تعيين حسب الجهة</h3><p class="note" style="margin-top:-6px">يُسند كل متدربي الجهة إلى المشرف المختار.</p><div class="form" style="grid-template-columns:1fr"><label>جهة التدريب<select id="asEnt"><option value="">اختر الجهة</option>'+ents.map(e=>'<option>'+esc(e)+'</option>').join("")+'</select></label><label>المشرف<select id="asSup"><option value="">بلا مشرف</option>'+sups.map(s=>'<option value="'+s.id+'">'+esc(s.name)+'</option>').join("")+'</select></label></div><div class="actions"><button class="btn primary" data-act="assign">تعيين لكل متدربي الجهة</button></div></section>'+
     '<section class="panel"><h3>الجهات ومشرفوها <span class="muted" style="font-weight:400">('+ents.length+')</span></h3><div class="scroll"><table class="list"><thead><tr><th>الجهة</th><th>متدربون</th><th>مشرف الكلية</th></tr></thead><tbody>'+
     ents.map(e=>{ const ts=S.data.trainees.filter(t=>t.entity===e), ss=uniq(ts.map(t=>staffName(t.supervisor_id))), un=ts.filter(t=>!t.supervisor_id).length; return '<tr class="click" data-fent="'+esc(e)+'"><td>'+esc(e)+'</td><td class="num">'+ts.length+'</td><td>'+ss.map(esc).join("، ")+(un?' <span class="tag warn">'+un+' بلا مشرف</span>':'')+'</td></tr>'; }).join("")+'</tbody></table></div></section></div>';
@@ -467,7 +472,7 @@ function viewStaff(){
 function staffForm(id){
   const s=id?S.data.staff.find(x=>Number(x.id)===Number(id)):{};
   openModal('<div class="head"><div><h2>'+(id?'تعديل بيانات '+(s.role==="admin"?'المسؤول':'المشرف'):'إضافة مشرف')+'</h2></div><button class="x" data-close="modal" aria-label="إغلاق">×</button></div><form class="form" id="sform" novalidate><input type="hidden" name="id" value="'+(id||"")+'">'+
-    '<label class="full">الاسم الكامل<input name="name" required value="'+esc(s.name||"")+'"></label><label>الرقم الوظيفي<input name="username" inputmode="numeric" dir="ltr" required value="'+esc(s.username||"")+'"></label><label>الجوال<input name="phone" inputmode="tel" dir="ltr" value="'+esc(s.phone||"")+'"></label>'+
+    '<label class="full">الاسم الكامل<input name="name" required value="'+esc(s.name||"")+'"></label><label>الرقم الوظيفي<input name="username" inputmode="numeric" dir="ltr" required value="'+esc(s.username||"")+'"></label><label>الجوال<input name="phone" inputmode="tel" dir="ltr" value="'+esc(s.phone||"")+'"></label>'+'<label class="full">الصلاحية<select name="role"'+(id&&Number(id)===Number(S.user.id)?' disabled':'')+'><option value="supervisor"'+(s.role!=="admin"?' selected':'')+'>مشرف الكلية</option><option value="admin"'+(s.role==="admin"?' selected':'')+'>مسؤول (كل الصلاحيات)</option></select></label>'+
     (!id?'<p class="full note" style="margin:0">تُولَّد كلمة مرور مؤقتة تظهر بعد الحفظ، ويُطلب من المشرف تغييرها عند أول دخول.</p>':'')+
     '<div class="full err" id="serr" role="alert"></div><div class="full actions" style="margin-top:0"><button class="btn primary" type="submit">'+(id?'حفظ':'إضافة المشرف')+'</button><button class="btn" type="button" data-close="modal">إلغاء</button></div></form>');
   $("#sform").onsubmit=async ev=>{ ev.preventDefault(); try{ const r=await api("staff.save",Object.fromEntries(new FormData(ev.target))); await loadData(); paint(); if(r.tempPassword) showTempPw(ev.target.elements.name.value,ev.target.elements.username.value,r.tempPassword); else { closeModal(); toast("حُفظت البيانات"); } }catch(e){ $("#serr").textContent=e.message; } };
@@ -485,8 +490,56 @@ function viewNotices(){
     '<section class="panel"><h3>الإعلانات المنشورة</h3>'+(S.data.notices.length?S.data.notices.map(n=>'<div class="notice"><div style="display:flex;gap:10px;align-items:flex-start"><div style="flex:1"><b>'+esc(n.title)+'</b><span class="note">'+esc(fmtT(n.created_at))+' · '+aud[n.audience]+'</span></div><button class="btn sm danger" data-act="delN" data-id="'+n.id+'">حذف</button></div>'+(n.body?'<p>'+esc(n.body)+'</p>':'')+'</div>').join(""):'<div class="empty">لا توجد إعلانات.</div>')+'</section></div>';
 }
 
+/* ---------- admin: login support ---------- */
+async function loadSupport(){ try{ S.sup.data=await api("support.search",{q:S.sup.q,filter:S.sup.filter}); }catch(e){ S.sup.data={rows:[],unknown:[],stats:{},me:0}; toast(e.message); } paint(); }
+function supStatus(r){
+  if(Number(r.fails_recent)>=5) return '<span class="tag bad">مقفل مؤقتاً</span>';
+  if(!Number(r.active)) return '<span class="tag bad">موقوف</span>';
+  if(r.role==="trainee" && !Number(r.has_password)) return '<span class="tag warn">بانتظار التفعيل</span>';
+  if(Number(r.must_change)) return '<span class="tag warn">لم يغيّر الكلمة المؤقتة</span>';
+  return '<span class="tag">نشط</span>';
+}
+const ROLE_AR={admin:"مسؤول",supervisor:"مشرف",trainee:"متدرب"};
+function viewSupport(){
+  const d=S.sup.data;
+  if(!d){ loadSupport(); return '<div class="empty">جارٍ تحميل الحسابات…</div>'; }
+  const st=d.stats||{};
+  let h='<div class="sec-title"><div><h2>دعم الدخول</h2><div class="muted">ابحث عن أي حساب لحل مشكلة دخوله: فك القفل، أو إعادة التعيين، أو الإيقاف، أو الحذف.</div></div><button class="btn" data-act="supReload">تحديث</button></div>'+
+    '<div class="kpi-row" style="margin:14px 0"><button class="kpi" style="text-align:start;cursor:pointer" data-act="supF" data-f="locked"><b class="num">'+(st.locked||0)+'</b><span>مقفل مؤقتاً بسبب محاولات خاطئة</span></button><button class="kpi" style="text-align:start;cursor:pointer" data-act="supF" data-f="pending"><b class="num">'+(st.pending||0)+'</b><span>بانتظار التفعيل أو تغيير الكلمة المؤقتة</span></button><button class="kpi" style="text-align:start;cursor:pointer" data-act="supF" data-f="inactive"><b class="num">'+(st.inactive||0)+'</b><span>حساباً موقوفاً</span></button><div class="kpi"><b class="num">'+((Number(st.staff)||0)+(Number(st.trainees)||0))+'</b><span>حساباً ('+(st.staff||0)+' منسوب، '+(st.trainees||0)+' متدرب)</span></div></div>'+
+    '<div class="toolbar"><input type="search" id="supq" placeholder="ابحث بالاسم أو الرقم الوظيفي أو التدريبي أو الجوال" value="'+esc(S.sup.q)+'" aria-label="بحث"><select id="supf" aria-label="تصفية"><option value="">كل الحسابات</option>'+[["staff","منسوبو الكلية"],["trainee","المتدربون"],["locked","المقفلون مؤقتاً"],["pending","بانتظار التفعيل"],["inactive","الموقوفون"]].map(([k,l])=>'<option value="'+k+'"'+(S.sup.filter===k?' selected':'')+'>'+l+'</option>').join("")+'</select></div>';
+  h+='<section class="panel" style="padding:6px 8px"><div class="scroll"><table class="list resp"><thead><tr><th>الحساب</th><th>النوع</th><th>الحالة</th><th>آخر دخول</th><th>محاولات خاطئة (7 أيام)</th><th></th></tr></thead><tbody>'+
+    (d.rows.length?d.rows.map(r=>'<tr class="click" data-act="supOpen" data-id="'+r.id+'" tabindex="0"><td class="tname"><b>'+esc(r.name)+(Number(r.id)===Number(d.me)?' <span class="tag">أنت</span>':'')+'</b><small class="num">'+esc(r.username)+'</small>'+(r.entity?' <small>· '+esc(r.entity)+'</small>':'')+'</td><td class="hide-m">'+ROLE_AR[r.role]+'</td><td>'+supStatus(r)+'</td><td class="hide-m">'+(r.last_login?esc(fmtT(r.last_login)):'<span class="muted">لم يدخل</span>')+'</td><td class="num hide-m">'+(Number(r.fails_week)?'<span class="tag '+(Number(r.fails_recent)>=5?'bad':'warn')+'">'+r.fails_week+'</span>':'0')+'</td><td style="text-align:end"><button class="btn sm" data-act="supOpen" data-id="'+r.id+'">إدارة</button></td></tr>').join(""):'<tr><td colspan="6" class="empty">لا توجد حسابات مطابقة.</td></tr>')+'</tbody></table></div></section>';
+  if(d.unknown && d.unknown.length) h+='<section class="panel" style="margin-top:18px"><h3>محاولات دخول بأرقام غير مسجّلة <span class="muted" style="font-weight:400">(آخر 7 أيام)</span></h3><p class="note" style="margin-top:-6px">غالباً رقم كُتب خطأً، أو متدرب لم يُضف للمنصة بعد، أو مشرف لم يُنشأ حسابه.</p><table class="list"><tbody>'+
+    d.unknown.map(u=>'<tr><td class="num"><b>'+esc(u.username)+'</b></td><td>'+u.n+' محاولة</td><td class="note">آخرها '+esc(fmtT(u.last))+'</td><td style="text-align:end"><button class="btn sm" data-act="supUnlockName" data-u="'+esc(u.username)+'">مسح المحاولات</button></td></tr>').join("")+'</tbody></table></section>';
+  return h;
+}
+async function supportModal(id){
+  const r=(S.sup.data&&S.sup.data.rows||[]).find(x=>Number(x.id)===Number(id)); if(!r) return;
+  const self=Number(r.id)===Number(S.sup.data.me), tr=r.role==="trainee";
+  const dd=(l,v,ltr)=>'<dt>'+l+'</dt><dd'+(ltr?' class="num" style="text-align:right"':'')+'>'+(v?esc(v):'<span class="muted">—</span>')+'</dd>';
+  openModal('<div class="head"><div><h2>'+esc(r.name)+'</h2><div class="muted">'+ROLE_AR[r.role]+' · <span class="num">'+esc(r.username)+'</span></div><div style="margin-top:6px">'+supStatus(r)+'</div></div><button class="x" data-close="modal" aria-label="إغلاق">×</button></div>'+
+    '<dl class="kv">'+dd(tr?"الرقم التدريبي":"الرقم الوظيفي",r.username,1)+dd("الجوال",r.phone,1)+(tr?dd("القسم",r.dept)+dd("جهة التدريب",r.entity)+dd("رمز التفعيل الحالي",r.activation_code?fmtCode(r.activation_code):"",1):"")+dd("آخر دخول",r.last_login?fmtT(r.last_login):"")+dd("آخر محاولة خاطئة",r.last_fail?fmtT(r.last_fail):"")+dd("أُنشئ الحساب",r.created_at?fmtT(r.created_at):"")+'</dl>'+
+    (self?'<div class="callout">هذا حسابك. لتغيير كلمة مرورك استخدم «الإعدادات» ← «حسابي».</div>':
+    '<h3>حلول سريعة</h3><div class="actions" style="margin-top:0">'+
+      (Number(r.fails_week)?'<button class="btn" data-act="supUnlock" data-id="'+r.id+'">فك القفل ومسح المحاولات</button>':'')+
+      '<button class="btn primary" data-act="supReset" data-id="'+r.id+'">'+(tr?'رمز تفعيل جديد':'كلمة مرور مؤقتة جديدة')+'</button>'+
+      '<button class="btn" data-act="supLogout" data-id="'+r.id+'">إخراجه من كل الأجهزة</button>'+
+      '<button class="btn'+(Number(r.active)?' danger':'')+'" data-act="supToggle" data-id="'+r.id+'">'+(Number(r.active)?'إيقاف الحساب':'تفعيل الحساب')+'</button></div>'+
+    '<h3 style="margin-top:18px">الحذف</h3><div class="actions" style="margin-top:0"><button class="btn danger" data-act="supDel" data-id="'+r.id+'" data-mode="account">'+(tr?'حذف حساب الدخول فقط':'حذف الحساب')+'</button>'+(tr?'<button class="btn danger" data-act="supDel" data-id="'+r.id+'" data-mode="all">حذف المتدرب وكل بياناته</button>':'')+'</div>'+
+    '<p class="note">'+(tr?'«حذف حساب الدخول فقط» يُبقي بيانات المتدرب وزياراته، ويمكن توليد رمز جديد له لاحقاً. «حذف المتدرب وكل بياناته» يحذف سجله وزياراته وتقاريره نهائياً.':'حذف المشرف لا يحذف زياراته، ويصبح متدربوه بلا مشرف.')+'</p>')+
+    '<h3 style="margin-top:18px">آخر محاولات الدخول</h3><div id="supAtt" class="note">جارٍ التحميل…</div>');
+  try{ const a=await api("support.attempts",{id}); const el=$("#supAtt"); if(el) el.innerHTML=a.length?'<table class="list"><tbody>'+a.map(x=>'<tr><td>'+(Number(x.success)?'<span class="tag">نجح</span>':'<span class="tag bad">فشل</span>')+'</td><td>'+esc(fmtT(x.created_at))+'</td><td class="num note">'+esc(x.ip)+'</td></tr>').join("")+'</tbody></table>':'لا توجد محاولات مسجّلة.'; }catch(e){ const el=$("#supAtt"); if(el) el.textContent=e.message; }
+}
+function supResult(r,res){
+  const tr=r.role==="trainee", link=location.origin+location.pathname.replace(/[^/]*$/,"");
+  const msg=tr?("المتدرب "+r.name+"\nأُعيد تعيين دخولك إلى منصة التدريب التعاوني – "+S.settings.college+":\n"+link+"\nاختر «فعّل حسابك برمز التفعيل».\nالرقم التدريبي: "+r.username+"\nرمز التفعيل: "+fmtCode(res.value)+"\nلا تشارك الرمز مع أحد.")
+    :("الأستاذ "+r.name+"\nأُعيد تعيين دخولك إلى منصة التدريب التعاوني – "+S.settings.college+":\n"+link+"\nالرقم الوظيفي: "+r.username+"\nكلمة المرور المؤقتة: "+res.value+"\nاختر «منسوبو الكلية»، وستُطلب منك كلمة مرور جديدة عند الدخول.");
+  const wa=waLink(r.phone,msg);
+  openModal('<div class="head"><div><h2>'+(tr?'رمز التفعيل الجديد':'كلمة المرور المؤقتة')+'</h2><div class="muted">'+esc(r.name)+'</div></div><button class="x" data-close="modal" aria-label="إغلاق">×</button></div><p>أرسله له بطريقة خاصة. لن يظهر مرة أخرى، وأُخرج من كل الأجهزة وفُكّ قفله.</p><p class="code" style="font-size:22px">'+esc(tr?fmtCode(res.value):res.value)+'</p><div class="actions">'+(wa?'<a class="btn primary" href="'+esc(wa)+'" target="_blank" rel="noopener">إرسال عبر واتساب</a>':'')+'<button class="btn" data-act="copy" data-text="'+esc(msg)+'">نسخ الرسالة</button><button class="btn" data-close="modal">تم</button></div>');
+}
+
 /* ---------- admin: log ---------- */
-const ACT={login:["تسجيل دخول",""],login_fail:["محاولة فاشلة","bad"],logout:["خروج","warn"],activate:["تفعيل حساب",""],create:["إضافة",""],update:["تعديل",""],delete:["حذف","bad"],import:["استيراد",""],assign:["تعيين",""],review:["مراجعة تقرير",""],submit:["تسليم تقرير",""],field_eval:["تقييم جهة",""],eval_link:["رابط تقييم",""],access_issue:["رموز تفعيل",""],access_toggle:["إيقاف/تفعيل حساب","warn"],reset_password:["كلمة مرور مؤقتة","warn"],password:["تغيير كلمة المرور",""],settings:["الإعدادات",""],brand:["الشعار",""],backup:["نسخة احتياطية",""],graduate:["نقل للخريجين",""],start_status:["المباشرة",""],toggle:["إيقاف/تفعيل","warn"]};
+const ACT={login:["تسجيل دخول",""],login_fail:["محاولة فاشلة","bad"],logout:["خروج","warn"],activate:["تفعيل حساب",""],create:["إضافة",""],update:["تعديل",""],delete:["حذف","bad"],import:["استيراد",""],assign:["تعيين",""],review:["مراجعة تقرير",""],submit:["تسليم تقرير",""],field_eval:["تقييم جهة",""],eval_link:["رابط تقييم",""],access_issue:["رموز تفعيل",""],access_toggle:["إيقاف/تفعيل حساب","warn"],reset_password:["كلمة مرور مؤقتة","warn"],password:["تغيير كلمة المرور",""],settings:["الإعدادات",""],brand:["الشعار",""],backup:["نسخة احتياطية",""],graduate:["نقل للخريجين",""],start_status:["المباشرة",""],toggle:["إيقاف/تفعيل","warn"],unlock:["فك قفل",""],force_logout:["إخراج من الأجهزة","warn"],reset_access:["رمز تفعيل جديد","warn"],deactivate:["إيقاف حساب","bad"],activate_account:["تفعيل حساب",""]};
 const TGT={user:"مستخدم",trainee:"متدرب",visit:"زيارة",weekly:"تقرير أسبوعي",staff:"مشرف",graduate:"خريج",graduates:"خريجون",trainees:"متدربون",notice:"إعلان",eval:"تقييم",settings:"الإعدادات"};
 function viewLog(){
   if(!S.audit){ loadAudit(); return '<div class="empty">جارٍ تحميل السجل…</div>'; }
@@ -621,7 +674,7 @@ document.addEventListener("click",async ev=>{
   }
   if(el.dataset.ltab){ S.loginTab=el.dataset.ltab; S.tMode="login"; paint(); const f=$("#luser")||$("#lacad"); if(f) f.focus(); return; }
   if(el.dataset.tmode){ S.tMode=el.dataset.tmode; paint(); const f=$("#luser")||$("#lacad"); if(f) f.focus(); return; }
-  if(el.dataset.nav){ S.view=el.dataset.nav; if(el.dataset.fSt!=null){ S.f=Object.assign({},S.f,{st:el.dataset.fSt,mine:true}); } S.openT=null; closeModal(); if(S.view==="weekly" && isStaff()) S.weekly=null; if(S.view==="log") S.audit=null; history.replaceState(null,"","#"+S.view); paint(); scrollTo(0,0); return; }
+  if(el.dataset.nav){ S.view=el.dataset.nav; if(el.dataset.fSt!=null){ S.f=Object.assign({},S.f,{st:el.dataset.fSt,mine:true}); } S.openT=null; closeModal(); if(S.view==="weekly" && isStaff()) S.weekly=null; if(S.view==="log") S.audit=null; if(S.view==="support") S.sup.data=null; history.replaceState(null,"","#"+S.view); paint(); scrollTo(0,0); return; }
   if(el.dataset.open){ S.openT=Number(el.dataset.open); closeModal(); paintDrawer(); return; }
   if(el.dataset.fdept!=null){ S.f=Object.assign({},S.f,{dept:el.dataset.fdept,spec:"",entity:"",sector:"",st:"",sup:"",q:""}); S.view="trainees"; paint(); scrollTo(0,0); return; }
   if(el.dataset.fent!=null){ S.f=Object.assign({},S.f,{entity:el.dataset.fent,dept:"",spec:"",sector:"",st:"",sup:"",q:""}); S.view="trainees"; paint(); scrollTo(0,0); return; }
@@ -673,6 +726,15 @@ document.addEventListener("click",async ev=>{
     else if(a==="assign"){ const e=$("#asEnt").value, v=$("#asSup").value; if(!e){ toast("اختر جهة التدريب أولاً"); return; } const r=await api("trainee.assign",{entity:e,supervisor_id:v}); toast("عُيّن "+r.count+" متدرباً"); refresh(); }
     else if(a==="delN"){ await api("notice.delete",{id}); toast("حُذف الإعلان"); refresh(); }
     else if(a==="reloadLog"){ S.audit=null; paint(); }
+    else if(a==="supReload"){ S.sup.data=null; paint(); }
+    else if(a==="supF"){ S.sup.filter=el.dataset.f; S.sup.data=null; paint(); }
+    else if(a==="supOpen") supportModal(Number(id));
+    else if(a==="supUnlock"){ const r=await api("support.unlock",{id}); toast("فُكّ القفل ومُسحت "+r.cleared+" محاولة"); await loadSupport(); supportModal(Number(id)); }
+    else if(a==="supUnlockName"){ const r=await api("support.unlock",{username:el.dataset.u}); toast("مُسحت "+r.cleared+" محاولة"); loadSupport(); }
+    else if(a==="supLogout"){ const r=await api("support.logout",{id}); toast(r.sessions?"أُخرج من "+r.sessions+" جهاز":"لا توجد جلسات مفتوحة له الآن"); }
+    else if(a==="supReset"){ const r=S.sup.data.rows.find(x=>Number(x.id)===Number(id)); confirmBox(r.role==="trainee"?"رمز تفعيل جديد":"كلمة مرور مؤقتة جديدة","ستُلغى كلمة مرور «"+r.name+"» الحالية، ويُخرج من كل الأجهزة، ويُفك قفله.","متابعة",async()=>{ const res=await api("support.reset",{id}); await loadSupport(); supResult(r,res); },false); }
+    else if(a==="supToggle"){ const r=S.sup.data.rows.find(x=>Number(x.id)===Number(id)); const res=await api("support.toggle",{id}); toast(res.active?"فُعّل الحساب":"أُوقف الحساب وأُخرج من كل الأجهزة"); await loadSupport(); supportModal(Number(id)); }
+    else if(a==="supDel"){ const r=S.sup.data.rows.find(x=>Number(x.id)===Number(id)), all=el.dataset.mode==="all"; confirmBox(all?"حذف المتدرب وكل بياناته":"حذف الحساب",all?"سيُحذف «"+r.name+"» وزياراته وتقاريره الأسبوعية وتقييماته نهائياً، ولا يمكن التراجع.":(r.role==="trainee"?"سيُحذف حساب دخول «"+r.name+"» فقط، وتبقى بياناته. يمكنك توليد رمز جديد له لاحقاً من «حسابات المتدربين».":"سيُحذف حساب «"+r.name+"». تبقى زياراته، ويصبح متدربوه بلا مشرف."),"حذف نهائياً",async()=>{ await api("support.delete",{id,mode:el.dataset.mode}); closeModal(); toast("حُذف"); await loadSupport(); refresh(); }); }
   }catch(e){ if(e) toast(e.message); }
 });
 document.addEventListener("keydown",ev=>{
@@ -682,6 +744,7 @@ document.addEventListener("keydown",ev=>{
 document.addEventListener("input",ev=>{
   const id=ev.target.id, v=ev.target.value;
   if(ev.target.closest("form")) S.dirty=true;
+  if(id==="supq"){ S.sup.q=v; clearTimeout(S.sup._t); S.sup._t=setTimeout(loadSupport,400); return; }
   if(id==="fq"){ S.f.q=v; paint(); } else if(id==="vq"){ S.vf.q=v; paint(); } else if(id==="wq"){ S.wf.q=v; paint(); } else if(id==="gq"){ S.gf.q=v; paint(); }
 });
 document.addEventListener("change",async ev=>{
@@ -692,6 +755,7 @@ document.addEventListener("change",async ev=>{
   else if(id==="vsup"){ S.vf.sup=v; paint(); }
   else if(id==="wst"){ S.wf.status=v; paint(); }
   else if(id==="gst"){ S.gf.st=v; paint(); } else if(id==="gterm"){ S.gf.term=v; paint(); }
+  else if(id==="supf"){ S.sup.filter=v; S.sup.data=null; paint(); }
   else if(id==="akind"){ S.af.kind=v; S.audit=null; paint(); }
   else if(id==="selAll"){ const {list}=filteredTrainees(); list.forEach(t=>S.sel[t.id]=el.checked); paint(); }
   else if(id==="bulkSup" && v){ const ids=Object.keys(S.sel).filter(k=>S.sel[k]).map(Number); try{ const r=await api("trainee.assign",{ids,supervisor_id:v==="_none"?"":v}); S.sel={}; toast("عُيّن "+r.count+" متدرباً"); refresh(); }catch(e){ toast(e.message); } }
@@ -707,6 +771,13 @@ document.addEventListener("submit",async ev=>{
     btn.disabled=true; btn.textContent="جارٍ الإرسال…";
     try{ await api("weekly.submit",new FormData(f),true); toast("سُلّم التقرير لمشرفك"); S.portal=await api("portal"); paint(); }catch(e){ err.textContent=e.message; btn.disabled=false; btn.textContent="تسليم التقرير"; } }
 });
+
+/* ---------- show/hide password eye ---------- */
+const EYE='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_OFF='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 19c-7 0-11-7-11-7a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+function eyeify(){ document.querySelectorAll('input[type=password]:not([data-eye])').forEach(i=>{ i.dataset.eye="1"; const w=document.createElement("span"); w.className="pw-wrap"; i.parentNode.insertBefore(w,i); w.appendChild(i); const b=document.createElement("button"); b.type="button"; b.className="pw-eye"; b.title="إظهار كلمة المرور"; b.setAttribute("aria-label","إظهار كلمة المرور"); b.innerHTML=EYE; w.appendChild(b); }); }
+new MutationObserver(eyeify).observe(document.body,{childList:true,subtree:true});
+document.addEventListener("click",ev=>{ const b=ev.target.closest(".pw-eye"); if(!b) return; ev.preventDefault(); ev.stopPropagation(); const i=b.parentNode.querySelector("input"); const show=i.type==="password"; i.type=show?"text":"password"; b.innerHTML=show?EYE_OFF:EYE; const t=show?"إخفاء كلمة المرور":"إظهار كلمة المرور"; b.title=t; b.setAttribute("aria-label",t); i.focus(); },true);
 
 boot();
 })();
